@@ -1,10 +1,13 @@
-﻿<div class="font-semibold font-title">
+﻿@model Project_D.Models.PollModel
+
+<div class="font-semibold font-title">
     Create a poll
 </div>
 <br />
-<form>
+<form method="post" asp-action="SubmitPoll">
     <label for="question">What do you want to poll?</label><br />
-    <input type="text" placeholder="Insert question here"/><br />
+    @Html.TextBoxFor(model => model.Question)
+    <br />
     <br />
     <label for="answerAmount">Single or multiple answers?</label><br />
     <input type="radio" id="single" name="answers" value="single" />
@@ -12,5 +15,5 @@
     <input type="radio" id="multiple" name="answers" value="multiple" />
     <label for="multiple">Multiple answers</label>
     <br />
-    <input type="submit" value="Submit" /> <br />
+    <button name="submit" asp-action="SubmitQuestion" />Submit Question<br />
 </form>
