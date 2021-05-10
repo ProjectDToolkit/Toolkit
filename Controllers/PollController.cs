@@ -14,13 +14,14 @@ namespace Project_D.Controllers
         MySqlConnection connection = new MySqlConnection(default);
         
         [Route("create_poll")]
+        [HttpGet]
         public IActionResult CreatePoll()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitPoll(PollModel model)
+        public async Task<IActionResult> CreatePoll(PollModel model)
         {
             if (ModelState.IsValid)
             {
@@ -43,7 +44,7 @@ namespace Project_D.Controllers
                     connection.Close();
                 }
             }
-            return RedirectToAction("CreatePoll");
+            return View();
         }
     }
 }
