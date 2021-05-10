@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ProjectD.Controllers
 {
     public class SessionStartController : Controller
-    {
+    { 
         
         public IActionResult Index()
         {
@@ -21,11 +21,11 @@ namespace ProjectD.Controllers
 		{
 			if (SessionCode == null)
 			{
-				ViewBag.Name = string.Format("No session code was posted.");
+				ViewBag.SessionMessage = string.Format("No session code was posted.");
 			}
 			else
 			{
-				ViewBag.Name = string.Format("Posted Session code: {0}", SessionCode);
+				ViewBag.SessionMessage = string.Format("Session code: {0}", SessionCode);
 			}
 			return View();
 		}

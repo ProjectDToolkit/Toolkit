@@ -1,9 +1,7 @@
-﻿@{
-    Layout = null;
-}
+﻿
 @model ProjectD.Models.HomeModel
 
-<!DOCTYPE html>
+
 <script>function randomString(len, charSet) {
         charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         var randomString = '';
@@ -11,30 +9,28 @@
             var randomPoz = Math.floor(Math.random() * charSet.length);
             randomString += charSet.substring(randomPoz, randomPoz + 1);
         }
-    document.getElementById("newCode").value = randomString;
-    document.getElementById("submitButton").disabled = false;
-}
-</script>
+        document.getElementById("newCode").value = randomString;
+        document.getElementById("submitButton").disabled = false;
+    }</script>
 
-<form method="post" asp-action="JoinSession" asp-controller="Home">
+<form method="post" asp-action="JoinSession" asp-controller="Home" class="form-group">
     <div class="form-group">
-        <p> Enter your session code</p>
-        <label asp-for="SessionCode"></label>
-        <input asp-for="SessionCode" name="SessionCode" />
-    </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-dark btn-lg" value="Join session" />
+        <label asp-for="SessionCode">Enter your session code</label>
+        <input asp-for="SessionCode" name="SessionCode" class="form-control" />
+        <br />
+        <input type="submit" class="btn btn-dark btn-lg" value="Join Session">
     </div>
 </form>
 
-<p> Don't have a session code yet? Create your new session here</p>
-<button onclick="randomString(5);">Generate session code</button>
-<form method="post" asp-action="Index" asp-controller="Home">
-    <div class="form-group"> 
-        <label asp-for="NewSessionCode"></label>
-        <input asp-for="NewSessionCode" name="NewSessionCode" readonly="readonly" id="newCode" />
-    </div>
+<br />
+Don't have a session code yet? Create your new session here
+
+<form method="post" asp-action="Index" asp-controller="Home" class="form-group">
+    @*<p onclick="randomString(6);" class="btn btn-dark btn-lg">Generate session code</p>*@
     <div class="form-group">
-        <input type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session" disabled="disabled" />
+        <label asp-for="NewSessionCode"></label>
+        <input asp-for="NewSessionCode" name="NewSessionCode" readonly="readonly" id="newCode" class="form-control" hidden="hidden" />
+        <br />
+        <input onclick="randomString(6);" type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session">
     </div>
 </form>
