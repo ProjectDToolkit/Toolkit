@@ -4,16 +4,13 @@
     Create a poll
 </div>
 <br />
-<form method="post" asp-action="SubmitPoll" asp-controller="'Poll">
-    <label for="question">What do you want to poll?</label><br />
-    @Html.TextBoxFor(model => model.Question)
-    <br />
-    <br />
-    <label for="answerAmount">Single or multiple answers?</label><br />
-    <input type="radio" id="single" name="answers" value="single" />
-    <label for="single">Single answer</label><br />
-    <input type="radio" id="multiple" name="answers" value="multiple" />
-    <label for="multiple">Multiple answers</label>
-    <br />
-    <input type="submit" value="submit"/><br />
+<form method="post" asp-action="SubmitPoll" asp-controller="Poll">
+    <div class="form-group">
+        <p> What do you want to poll?</p>
+        <label asp-for="PollQuestion"></label>
+        <input asp-for="PollQuestion" name="PollQuestion" />
+    </div>
+    <div class="form-group">
+        <input type="submit" class="btn btn-dark btn-lg" value="Create Poll" />
+    </div>
 </form>
