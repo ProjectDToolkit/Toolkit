@@ -1,6 +1,40 @@
-﻿<div class="font-semibold font-title">
-    Hello, World
-</div>
-<p>
-    Welcome to Microsoft Teams Hello World sample app (C#)
-</p>
+﻿@{
+    Layout = null;
+}
+@model ProjectD.Models.HomeModel
+
+<!DOCTYPE html>
+<script>function randomString(len, charSet) {
+        charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        var randomString = '';
+        for (var i = 0; i < len; i++) {
+            var randomPoz = Math.floor(Math.random() * charSet.length);
+            randomString += charSet.substring(randomPoz, randomPoz + 1);
+        }
+    document.getElementById("newCode").value = randomString;
+    document.getElementById("submitButton").disabled = false;
+}
+</script>
+
+<form method="post" asp-action="JoinSession" asp-controller="Home">
+    <div class="form-group">
+        <p> Enter your session code</p>
+        <label asp-for="SessionCode"></label>
+        <input asp-for="SessionCode" name="SessionCode" />
+    </div>
+    <div class="form-group">
+        <input type="submit" class="btn btn-dark btn-lg" value="Join session" />
+    </div>
+</form>
+
+<p> Don't have a session code yet? Create your new session here</p>
+<button onclick="randomString(5);">Generate session code</button>
+<form method="post" asp-action="Index" asp-controller="Home">
+    <div class="form-group"> 
+        <label asp-for="NewSessionCode"></label>
+        <input asp-for="NewSessionCode" name="NewSessionCode" readonly="readonly" id="newCode" />
+    </div>
+    <div class="form-group">
+        <input type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session" disabled="disabled" />
+    </div>
+</form>

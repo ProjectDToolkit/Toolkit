@@ -5,6 +5,7 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Project_D' " />
   <ItemGroup>
     <None Include="wwwroot\Content\msteams-16.css" />
     <None Include="wwwroot\Content\Site.css" />
@@ -24,4 +25,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Models\" />
+      <Folder Include="Views\SessionStart\" />
+    </ItemGroup>
 </Project>
