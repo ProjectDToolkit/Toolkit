@@ -14,14 +14,13 @@ namespace Project_D.Controllers
         MySqlConnection connection = new MySqlConnection(default);
         
         [Route("create_poll")]
-        [HttpGet]
         public IActionResult CreatePoll()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePoll(PollModel model)
+        public IActionResult SubmitPoll(PollModel model)
         {
             if (ModelState.IsValid)
             {

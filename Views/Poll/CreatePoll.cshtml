@@ -4,7 +4,7 @@
     Create a poll
 </div>
 <br />
-<form method="post" asp-action="CreatePoll">
+<form method="post" asp-action="SubmitPoll" asp-controller="'Poll">
     <label for="question">What do you want to poll?</label><br />
     @Html.TextBoxFor(model => model.Question)
     <br />
@@ -15,5 +15,5 @@
     <input type="radio" id="multiple" name="answers" value="multiple" />
     <label for="multiple">Multiple answers</label>
     <br />
-    <button name="submit" value="submit"/>Submit Question<br />
+    <input type="submit" value="submit"/><br />
 </form>
