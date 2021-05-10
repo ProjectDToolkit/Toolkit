@@ -14,13 +14,14 @@ namespace Project_D.Controllers
         MySqlConnection connection = new MySqlConnection(default);
         
         [Route("create_poll")]
+        [HttpGet]
         public IActionResult CreatePoll()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult SubmitPoll(PollModel model)
+        public IActionResult SubmitPoll()
         {
             if (ModelState.IsValid)
             {
@@ -28,7 +29,7 @@ namespace Project_D.Controllers
                 {
                     connection.Open();
 
-                    string q = $"INSERT INTO `polls`(`question`) VALUES ({model.Question})";
+                    string q = $"INSERT INTO `polls`(`question`) VALUES (`hallo`)";
 
                     MySqlCommand comm = new MySqlCommand(q, connection);
                     MySqlDataReader reader = comm.ExecuteReader();
