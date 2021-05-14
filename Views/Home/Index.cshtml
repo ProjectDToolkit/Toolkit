@@ -26,7 +26,6 @@
 Don't have a session code yet? Create your new session here
 
 <form method="post" asp-action="Index" asp-controller="Home" class="form-group">
-    @*<p onclick="randomString(6);" class="btn btn-dark btn-lg">Generate session code</p>*@
     <div class="form-group">
         <label asp-for="NewSessionCode"></label>
         <input asp-for="NewSessionCode" name="NewSessionCode" readonly="readonly" id="newCode" class="form-control" hidden="hidden" />
