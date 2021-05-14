@@ -3,39 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using ProjectD.Models;
 
-namespace Microsoft.Teams.Samples.HelloWorld.Web.Controllers
+namespace ProjectD.Controllers
 {
     public class HomeController : Controller
     {
-        [Route("")]
-        public ActionResult Index()
+        
+        public IActionResult Index()
         {
             return View();
         }
 
-        [Route("hello")]
-        public ActionResult Hello()
-        {
-            return View("Index");
+		[HttpPost]
+		public IActionResult JoinSession(string sessionCode)
+		{
+            return RedirectToAction("Index", "SessionStart", new { SessionCode = sessionCode });
         }
 
-        [Route("first")]
-        public ActionResult First()
+		[HttpPost]
+        public IActionResult Index(string newSessionCode)
         {
-            return View();
-        }
-
-        [Route("second")]
-        public ActionResult Second()
-        {
-            return View();
-        }
-
-        [Route("configure")]
-        public ActionResult Configure()
-        {
-            return View();
+            return RedirectToAction("Index", "SessionStart", new { SessionCode = newSessionCode });
         }
     }
 }
