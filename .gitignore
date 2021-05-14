@@ -37,5 +37,4 @@ msbuild.wrn
 .vs/
 
 #pictures you upload (local)
-UploadedFiles/
-wwwroot/Files/
+wwwroot/Files/*
