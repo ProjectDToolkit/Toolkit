@@ -1,7 +1,6 @@
 ﻿
 @model ProjectD.Models.HomeModel
 
-
 <script>function randomString(len, charSet) {
         charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         var randomString = '';
@@ -10,26 +9,27 @@
             randomString += charSet.substring(randomPoz, randomPoz + 1);
         }
         document.getElementById("newCode").value = randomString;
-        document.getElementById("submitButton").disabled = false;
     }</script>
 
-<form method="post" asp-action="JoinSession" asp-controller="Home" class="form-group">
-    <div class="form-group">
-        <label asp-for="SessionCode">Enter your session code</label>
-        <input asp-for="SessionCode" name="SessionCode" class="form-control" />
-        <br />
-        <input type="submit" class="btn btn-dark btn-lg" value="Join Session">
-    </div>
-</form>
-
+@using (Html.BeginForm("JoinSession", "Home", FormMethod.Post))
+{
+ <div class="form-group">
+    <label asp-for="JoinSessionCode">Enter your session code</label>
+    @Html.TextBoxFor(m => m.JoinSessionCode, new { @class = "form-control" })
+    <br />
+    <input type="submit" class="btn btn-dark btn-lg" value="Join Session">
+        @ViewBag.Message
+ </div>
+}
 <br />
-Don't have a session code yet? Create your new session here
+    Don't have a session code yet? Create your new session here
 
-<form method="post" asp-action="Index" asp-controller="Home" class="form-group">
-    <div class="form-group">
-        <label asp-for="NewSessionCode"></label>
-        <input asp-for="NewSessionCode" name="NewSessionCode" readonly="readonly" id="newCode" class="form-control" hidden="hidden" />
-        <br />
-        <input onclick="randomString(6);" type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session">
-    </div>
-</form>
+@using (Html.BeginForm("CreateSession", "Home", FormMethod.Post))
+{
+<div class="form-group">
+    <label asp-for="CreateSessionCode"></label>
+    @Html.TextBoxFor(m => m.CreateSessionCode, new { @hidden = "hidden", @id = "newCode" })
+    <br />
+    <input onclick="randomString(6);" type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session">
+</div>
+}

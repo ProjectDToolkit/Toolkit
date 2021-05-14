@@ -3,7 +3,7 @@ namespace ProjectD.Models
 {
 	public class HomeModel
 	{
-		public string SessionCode { get; set; }
-		public string NewSessionCode { get; set; }
+		public string JoinSessionCode { get; set; }
+		public string CreateSessionCode { get; set; }
 	}
 }
