@@ -28,7 +28,7 @@ namespace ProjectD.Controllers
                 if (formFile.Length > 0)
                 {
                     string test = AppContext.BaseDirectory;
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),"UploadedFiles", formFile.FileName);
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot\\Files", formFile.FileName);
                     filePaths.Add(filePath);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
