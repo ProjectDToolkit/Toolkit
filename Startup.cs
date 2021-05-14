@@ -10,7 +10,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using MySql.Data.MySqlClient;
 
 namespace Microsoft.Teams.Samples.HelloWorld.Web
 {
@@ -34,6 +34,9 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, MessageExtension>();
+
+            // Configure the connection to MySql
+            services.AddTransient<MySqlConnection>(_ => new MySqlConnection(Configuration["ConnectionStrings:Default"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
