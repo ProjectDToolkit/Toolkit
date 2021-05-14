@@ -13,9 +13,8 @@ namespace Project_D.Controllers
 
         MySqlConnection connection = new MySqlConnection(default);
         
-        [Route("create_poll")]
         [HttpGet]
-        public IActionResult CreatePoll()
+        public IActionResult Index()
         {
             return View();
         }
