@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
-using Project_D.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,40 +9,39 @@ namespace Project_D.Controllers
 {
     public class PollController : Controller
     {
-
-        MySqlConnection connection = new MySqlConnection(default);
-        
-        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult SubmitPoll()
+        public IActionResult Index(string Question)
         {
-            if (ModelState.IsValid)
+            var connection = new MySqlConnection(default);
+
+            try
             {
-                try
-                {
-                    connection.Open();
+                connection.Open();
 
-                    string q = $"INSERT INTO `polls`(`question`) VALUES (`hallo`)";
+                string query = "INSERT INTO `database`.`polls` (`question`) VALUES ('Testing DatabaseConnection');";
 
-                    MySqlCommand comm = new MySqlCommand(q, connection);
-                    MySqlDataReader reader = comm.ExecuteReader();
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-                finally
-                {
-                    connection.Close();
-                }
+                MySqlCommand command = new MySqlCommand(query, connection);
+                MySqlDataReader reader;
+                reader = command.ExecuteReader();
             }
-            return View();
+            catch (Exception)
+            {
+
+                
+                throw;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            
+            return RedirectToAction("Index", "Home", new { question = Question });
         }
     }
 }

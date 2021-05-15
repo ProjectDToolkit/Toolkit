@@ -1,16 +1,16 @@
-﻿@model Project_D.Models.PollModel
-
-<div class="font-semibold font-title">
-    Create a poll
-</div>
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
 <br />
-<form method="post" asp-action="SubmitPoll" asp-controller="Poll">
+Don't have a session code yet? Create your new session here
+
+<form method="post" asp-action="Index" asp-controller="Poll" class="form-group">
     <div class="form-group">
-        <p> What do you want to poll?</p>
-        <label asp-for="PollQuestion"></label>
-        <input asp-for="PollQuestion" name="PollQuestion" />
-    </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-dark btn-lg" value="Create Poll" />
+        <label asp-for="Question"></label>
+        <input asp-for="Question" name="Question" id="newQuestion-" class="form-control"/>
+        <br />
+        <input type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session">
     </div>
 </form>
