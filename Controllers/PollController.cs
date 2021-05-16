@@ -8,7 +8,7 @@ namespace Project_D.Controllers
     public class PollController : Controller
     {
 
-        public int QID;
+        public static int QID;
         public IActionResult Index()
         {
             return View();
@@ -52,7 +52,7 @@ namespace Project_D.Controllers
                     connection.Close();
                 }
 
-                return RedirectToAction("Vote", "Poll", new { Question = question, AnswerA = answerA, AnswerB = answerB });
+                return RedirectToAction("Vote", "Poll", new { id = QID});
             }
             else
             {
@@ -61,12 +61,46 @@ namespace Project_D.Controllers
             }
         }
 
-        public IActionResult Vote(string question, string answerA, string answerB)
+        public IActionResult Vote(int id)
         {
+            string question = "";
+            string answerA = "";
+            string answerB = "";
+
+            MySqlConnection connection;
+            connection = new MySqlConnection(Connector.getString());
+            try
+            {
+                connection.Open();
+
+                string query = $"SELECT * FROM polls WHERE `id` = '{id}';";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                MySqlDataReader reader;
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    question = reader.GetString("question");
+                    answerA = reader.GetString("answerA");
+                    answerB = reader.GetString("answerB");
+                }
+                reader.Close();
+            }
+            catch (Exception)
+            {
+
+
+                throw;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
             ViewBag.Question = question;
             ViewBag.AnswerA = answerA;
             ViewBag.AnswerB = answerB;
-            return View();
+
+            return View(id);
         }
 
         [HttpPost]
@@ -78,7 +112,7 @@ namespace Project_D.Controllers
             {
                 connection.Open();
 
-                string query = $"UPDATE `database`.`polls` SET `{Vote}` = `{Vote}` + 1, `totalVotes` = `totalVotes` + 1 WHERE id = 5;";
+                string query = $"UPDATE `database`.`polls` SET `{Vote}` = `{Vote}` + 1, `totalVotes` = `totalVotes` + 1 WHERE id = '{QID}';";
 
                 MySqlCommand command = new MySqlCommand(query, connection);
                 MySqlDataReader reader;
@@ -94,7 +128,7 @@ namespace Project_D.Controllers
             {
                 connection.Close();
             }
-            return View();
+            return RedirectToAction("Index", "SessionStart", new { id = QID });
         }
     }
 }
