@@ -17,7 +17,7 @@ namespace Project_D.Controllers
         [HttpPost]
         public IActionResult Index(string question, string answerA, string answerB)
         {
-            if (question != null && answerA != null && answerB != null)
+            if (question != null)
             {
                 return RedirectToAction("Vote", "Poll", new { Question = question, AnswerA = answerA, AnswerB = answerB });
             }
@@ -53,8 +53,11 @@ namespace Project_D.Controllers
 
         }
 
-        public IActionResult Vote()
+        public IActionResult Vote(string question, string answerA, string answerB)
         {
+            ViewBag.Question = question;
+            ViewBag.AnswerA = answerA;
+            ViewBag.AnswerB = answerB;                ;
             return View();
         }
     }
