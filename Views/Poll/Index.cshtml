@@ -1,15 +1,22 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<br />
-Don't have a session code yet? Create your new session here
+﻿
+@model ProjectD.Models.PollModel
 
 <form method="post" asp-action="Index" asp-controller="Poll" class="form-group">
     <div class="form-group">
+
+        <h1>Enter a question that you want to poll</h1>
+        <br />
+        <p style="color:red;">@ViewBag.ErrorMessage</p>
         <label asp-for="Question"></label>
-        <input asp-for="Question" name="Question" id="newQuestion-" class="form-control"/>
+        <input asp-for="Question" name="Question" id="newQuestion-" class="form-control" />
+        <br />
+        <br />
+        <br />
+        <label asp-for="Answer1">Answer A</label>
+        <input asp-for="Answer1" name="Amswer1" class="form-control" />
+        <br />
+        <label asp-for="Answer2">Answer B</label>
+        <input asp-for="Answer2" name="Answer2" class="form-control" />
         <br />
         <input type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session">
     </div>

@@ -15,8 +15,18 @@ namespace Project_D.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string Question)
+        public IActionResult Index(string question, string answerA, string answerB)
         {
+            if (question != null && answerA != null && answerB != null)
+            {
+                return RedirectToAction("Vote", "Poll", new { Question = question, AnswerA = answerA, AnswerB = answerB });
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Vul een alle velden in aub!";
+                return View();
+            }
+            /*
             var connection = new MySqlConnection(default);
 
             try
@@ -39,9 +49,13 @@ namespace Project_D.Controllers
             {
                 connection.Close();
             }
+            */
 
-            
-            return RedirectToAction("Index", "Home", new { question = Question });
+        }
+
+        public IActionResult Vote()
+        {
+            return View();
         }
     }
 }
