@@ -26,8 +26,9 @@ namespace Project_D.Controllers
                 ViewBag.ErrorMessage = "Vul een alle velden in aub!";
                 return View();
             }
-            /*
+           
             var connection = new MySqlConnection(default);
+            /*
 
             try
             {
@@ -49,15 +50,15 @@ namespace Project_D.Controllers
             {
                 connection.Close();
             }
-            */
 
+            return View();*/
         }
 
         public IActionResult Vote(string question, string answerA, string answerB)
         {
-            ViewBag.Question = question;
+            ViewBag.Question = question + answerA + answerB;
             ViewBag.AnswerA = answerA;
-            ViewBag.AnswerB = answerB;                ;
+            ViewBag.AnswerB = answerB;
             return View();
         }
     }
