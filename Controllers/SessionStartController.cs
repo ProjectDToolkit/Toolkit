@@ -61,7 +61,6 @@ namespace ProjectD.Controllers
                             ViewBag.SessionMessage = string.Format("Error inserting");
                         }
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -77,44 +76,30 @@ namespace ProjectD.Controllers
             //JoinSessionCode has a value, Join a session
             else if (CreateSessionCode == "" && JoinSessionCode != "")
 			{
-                int peopleinsession;
                 MySqlConnection Connection;
                 Connection = new MySqlConnection(Connector.getString());
-
+                Connection.Open();
                 try
-                {
-                    Connection.Open();
-                    string stringToRead = @"SELECT DISTINCT sessionCode, peopleInSession FROM database.sessions WHERE sessionCode = @SessionCode";
-                    MySqlCommand command = new MySqlCommand(stringToRead, Connection);
-
-                    // Add parameters here
-                    command.Parameters.AddWithValue("@SessionCode", JoinSessionCode);
-
-
-                    using (MySqlDataReader myReader = command.ExecuteReader())
-                    {
-                        myReader.Read();
-                        peopleinsession = Int32.Parse(myReader["peopleInSession"].ToString());
-                    }
-
+				{
                     // updating the people online
                     string stringToInsert = @"UPDATE sessions SET peopleInSession = peopleInSession + 1 WHERE sessionCode = @SessionCode;";
 
-                    using (MySqlCommand command2 = new MySqlCommand(stringToInsert, Connection))
+                    using (MySqlCommand command = new MySqlCommand(stringToInsert, Connection))
                     {
                         // Add parameters here
-                        command2.Parameters.AddWithValue("@SessionCode", JoinSessionCode);
+                        command.Parameters.AddWithValue("@SessionCode", JoinSessionCode);
 
-                        command2.Prepare();
-                        int rowsUpdated = command2.ExecuteNonQuery();
+                        command.Prepare();
+                        int rowsUpdated = command.ExecuteNonQuery();
 
                         if (rowsUpdated > 0)
                         {
-                            ViewBag.SessionMessage = string.Format("Session code: {0}, People online: {1}", JoinSessionCode, peopleinsession + 1);
+                            ViewBag.SessionMessage = string.Format("Session code: {0}, People online: {1}", JoinSessionCode, GetPeopleInSession(JoinSessionCode).ToString());
+
                         }
                         else
                         {
-                            ViewBag.SessionMessage = string.Format("Error inserting");
+                            ViewBag.SessionMessage = string.Format("Error updating people online");
                         }
                     }
                 }
@@ -125,10 +110,53 @@ namespace ProjectD.Controllers
                 finally
                 {
                     Connection.Close();
-                }                
+                }
             }
-
             return View();
 		}
+
+        /// <summary>
+		/// return int with amount of people currently in the session
+		/// </summary>
+		/// <param name="sessionCode">the current session code</param>
+		/// <returns></returns>
+		public int GetPeopleInSession(string sessionCode)
+		{
+            int peopleOnline = 0;
+
+            MySqlConnection Connection;
+            Connection = new MySqlConnection(Connector.getString());
+
+            try
+            {
+                Connection.Open();
+                string stringToRead = @"SELECT DISTINCT sessionCode, peopleInSession FROM database.sessions WHERE sessionCode = @SessionCode";
+                MySqlCommand command = new MySqlCommand(stringToRead, Connection);
+
+                // Add parameters here
+                command.Parameters.AddWithValue("@SessionCode", sessionCode);
+
+
+                using (MySqlDataReader myReader = command.ExecuteReader())
+                {
+                    myReader.Read();
+
+                    // update int with peopleonline and close the db
+                    peopleOnline = Int32.Parse(myReader["peopleInSession"].ToString());
+                    Connection.Close();
+
+                    //return current amount of people in the session
+                    return peopleOnline;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                Connection.Close();
+            }
+        }
 	}
 }
