@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using ProjectD.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,29 @@ namespace Project_D.Controllers
         {
             if (question != null)
             {
+                MySqlConnection connection;
+                connection = new MySqlConnection(Connector.getString());
+                try
+                {
+                    connection.Open();
+
+                    string query = $"INSERT INTO `database`.`polls` (`question`, `answerA`, `answerB`) VALUES ('{question}','{answerA}','{answerB}');";
+
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    MySqlDataReader reader;
+                    reader = command.ExecuteReader();
+                }
+                catch (Exception)
+                {
+
+
+                    throw;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
                 return RedirectToAction("Vote", "Poll", new { Question = question, AnswerA = answerA, AnswerB = answerB });
             }
             else
@@ -26,37 +50,11 @@ namespace Project_D.Controllers
                 ViewBag.ErrorMessage = "Vul een alle velden in aub!";
                 return View();
             }
-           
-            var connection = new MySqlConnection(default);
-            /*
-
-            try
-            {
-                connection.Open();
-
-                string query = "INSERT INTO `database`.`polls` (`question`) VALUES ('Testing DatabaseConnection');";
-
-                MySqlCommand command = new MySqlCommand(query, connection);
-                MySqlDataReader reader;
-                reader = command.ExecuteReader();
-            }
-            catch (Exception)
-            {
-
-                
-                throw;
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return View();*/
         }
 
         public IActionResult Vote(string question, string answerA, string answerB)
         {
-            ViewBag.Question = question + answerA + answerB;
+            ViewBag.Question = question;
             ViewBag.AnswerA = answerA;
             ViewBag.AnswerB = answerB;
             return View();
