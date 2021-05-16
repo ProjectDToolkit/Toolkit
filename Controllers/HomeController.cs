@@ -26,8 +26,6 @@ namespace ProjectD.Controllers
             MySqlConnection Connection;
             Connection = new MySqlConnection(Connector.getString());
 
-            
-
             try
             {
                 Connection.Open();

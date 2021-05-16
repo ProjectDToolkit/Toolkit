@@ -55,6 +55,7 @@ namespace ProjectD.Controllers
                         if (rowsUpdated > 0)
 						{
                             ViewBag.SessionMessage = string.Format("Session code: {0}, people online: 1", CreateSessionCode);
+                            ViewBag.SessionCode = string.Format(CreateSessionCode);
                         }
                         else
 						{
@@ -95,7 +96,7 @@ namespace ProjectD.Controllers
                         if (rowsUpdated > 0)
                         {
                             ViewBag.SessionMessage = string.Format("Session code: {0}, People online: {1}", JoinSessionCode, GetPeopleInSession(JoinSessionCode).ToString());
-
+                            ViewBag.SessionCode = string.Format(CreateSessionCode);
                         }
                         else
                         {
@@ -114,6 +115,45 @@ namespace ProjectD.Controllers
             }
             return View();
 		}
+
+        public IActionResult LeaveSession(string SessionCode)
+		{
+            MySqlConnection Connection;
+            Connection = new MySqlConnection(Connector.getString());
+            Connection.Open();
+            try
+            {
+                // updating the people online
+                string stringToInsert = @"UPDATE sessions SET peopleInSession = peopleInSession - 1 WHERE sessionCode = @SessionCode;";
+
+                using (MySqlCommand command = new MySqlCommand(stringToInsert, Connection))
+                {
+                    // Add parameters here
+                    command.Parameters.AddWithValue("@SessionCode", SessionCode);
+
+                    command.Prepare();
+                    int rowsUpdated = command.ExecuteNonQuery();
+
+                    if (rowsUpdated > 0)
+                    {
+                        return RedirectToAction("Index", "Home", new { message = "Session Left" });
+
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home", new { message = "Error while leaving session" });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                Connection.Close();
+            }
+        }
 
         /// <summary>
 		/// return int with amount of people currently in the session
