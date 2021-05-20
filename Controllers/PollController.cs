@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using ProjectD.Database;
+using ProjectD.Models;
 using System;
+using System.Collections.Generic;
 
 namespace Project_D.Controllers
 {
@@ -43,8 +45,6 @@ namespace Project_D.Controllers
                 }
                 catch (Exception)
                 {
-
-
                     throw;
                 }
                 finally
@@ -52,13 +52,62 @@ namespace Project_D.Controllers
                     connection.Close();
                 }
 
-                return RedirectToAction("Vote", "Poll", new { id = QID});
+                return RedirectToAction("QuestionsList", "Poll", new { sessionId = "TEST"});
             }
             else
             {
                 ViewBag.ErrorMessage = "Vul een alle velden in aub!";
                 return View();
             }
+        }
+
+        public IActionResult QuestionsList(string sessionID)
+        {
+            sessionID = "TEST";
+            List<QuestionModel> questionsList = new List<QuestionModel>();
+
+            MySqlConnection connection;
+            connection = new MySqlConnection(Connector.getString());
+
+            try
+            {
+                connection.Open();
+
+                string query = $"SELECT * FROM database.polls WHERE sessionID = '{sessionID}';";
+
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader reader;
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var question = new QuestionModel
+                    {
+                        questionId = reader.GetInt32("id"),
+                        SessionId = reader.GetString("sessionId"),
+                        question = reader.GetString("question")
+                    };
+                    questionsList.Add(question);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+
+            return View(questionsList);
+        }
+
+        [HttpPost]
+        public IActionResult QuestionsList(int id)
+        {
+            return RedirectToAction("Vote", "Poll", new { ID = id });
         }
 
         public IActionResult Vote(int id)
@@ -128,7 +177,7 @@ namespace Project_D.Controllers
             {
                 connection.Close();
             }
-            return RedirectToAction("Index", "SessionStart", new { id = QID });
+            return RedirectToAction("Index", "SessionStart", new { JoinSessionCode = "TEST"});
         }
     }
 }
