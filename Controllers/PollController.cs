@@ -11,7 +11,8 @@ namespace Project_D.Controllers
     {
 
         public static int QID;
-        public IActionResult Index()
+        public static string sessionID;
+        public IActionResult Index(string sessionId)
         {
             return View();
         }
@@ -37,7 +38,7 @@ namespace Project_D.Controllers
                     }
                     reader.Close();
 
-                    query = $"INSERT INTO `database`.`polls` (`id`,`question`, `answerA`, `answerB`) VALUES ('{QID}','{question}','{answerA}','{answerB}');";
+                    query = $"INSERT INTO `database`.`polls` (`id`, `sessionId`,`question`, `answerA`, `answerB`) VALUES ('{QID}','{"LER06C"}','{question}','{answerA}','{answerB}');";
 
                     command = new MySqlCommand(query, connection);
                     reader = command.ExecuteReader();
@@ -61,9 +62,9 @@ namespace Project_D.Controllers
             }
         }
 
-        public IActionResult QuestionsList(string sessionID)
+        public IActionResult QuestionsList(string sessionId)
         {
-            sessionID = "TEST";
+            sessionID = sessionId;
             List<QuestionModel> questionsList = new List<QuestionModel>();
 
             MySqlConnection connection;
@@ -152,6 +153,11 @@ namespace Project_D.Controllers
             return View(id);
         }
 
+        /// <summary>
+        /// Post method for 
+        /// </summary>
+        /// <param name="Vote"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Vote(string Vote)
         {
@@ -177,7 +183,7 @@ namespace Project_D.Controllers
             {
                 connection.Close();
             }
-            return RedirectToAction("Index", "SessionStart", new { JoinSessionCode = "TEST"});
-        }
+            return RedirectToAction("QuestionsList", "Poll", new { sessionId = sessionID });
+        } 
     }
 }
