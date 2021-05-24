@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using ProjectD.Database;
 using ProjectD.Models;
@@ -11,12 +12,24 @@ namespace Project_D.Controllers
     {
 
         public static int QID;
-        public static string sessionID;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <returns></returns>
         public IActionResult Index(string sessionId)
         {
             return View();
         }
 
+        /// <summary>
+        /// Post method for creating a poll, puts the question with the answers in the database
+        /// </summary>
+        /// <param name="question">The poll question</param>
+        /// <param name="answerA">The first answer</param>
+        /// <param name="answerB">The second answer</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Index(string question, string answerA, string answerB)
         {
@@ -38,7 +51,7 @@ namespace Project_D.Controllers
                     }
                     reader.Close();
 
-                    query = $"INSERT INTO `database`.`polls` (`id`, `sessionId`,`question`, `answerA`, `answerB`) VALUES ('{QID}','{"LER06C"}','{question}','{answerA}','{answerB}');";
+                    query = $"INSERT INTO `database`.`polls` (`id`, `sessionId`,`question`, `answerA`, `answerB`) VALUES ('{QID}','{HttpContext.Session.GetString("SessionCode")}','{question}','{answerA}','{answerB}');";
 
                     command = new MySqlCommand(query, connection);
                     reader = command.ExecuteReader();
@@ -53,7 +66,7 @@ namespace Project_D.Controllers
                     connection.Close();
                 }
 
-                return RedirectToAction("QuestionsList", "Poll", new { sessionId = "TEST"});
+                return RedirectToAction("QuestionsList", "Poll", new { sessionId = HttpContext.Session.GetString("SessionCode") });
             }
             else
             {
@@ -61,10 +74,12 @@ namespace Project_D.Controllers
                 return View();
             }
         }
-
-        public IActionResult QuestionsList(string sessionId)
+        /// <summary>
+        /// Shows the list of all questions within the session
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult QuestionsList()
         {
-            sessionID = sessionId;
             List<QuestionModel> questionsList = new List<QuestionModel>();
 
             MySqlConnection connection;
@@ -74,7 +89,7 @@ namespace Project_D.Controllers
             {
                 connection.Open();
 
-                string query = $"SELECT * FROM database.polls WHERE sessionID = '{sessionID}';";
+                string query = $"SELECT * FROM database.polls WHERE sessionID = '{HttpContext.Session.GetString("SessionCode")}';";
 
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 MySqlDataReader reader;
@@ -105,12 +120,23 @@ namespace Project_D.Controllers
             return View(questionsList);
         }
 
+        /// <summary>
+        /// Redirects to the right voting page for the poll the user has selected
+        /// </summary>
+        /// <param name="id">question ID for getting the right question in the DB</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult QuestionsList(int id)
         {
             return RedirectToAction("Vote", "Poll", new { ID = id });
         }
 
+
+        /// <summary>
+        /// Get method for showing the view for the poll the user wants to vote on
+        /// </summary>
+        /// <param name="id">question ID for getting the right question in the DB</param>
+        /// <returns></returns>
         public IActionResult Vote(int id)
         {
             string question = "";
@@ -154,9 +180,9 @@ namespace Project_D.Controllers
         }
 
         /// <summary>
-        /// Post method for 
+        /// Post method for updating total amount of votes when voting on a poll
         /// </summary>
-        /// <param name="Vote"></param>
+        /// <param name="Vote">Gets the option that the user has voted on</param>
         /// <returns></returns>
         [HttpPost]
         public IActionResult Vote(string Vote)
@@ -183,7 +209,7 @@ namespace Project_D.Controllers
             {
                 connection.Close();
             }
-            return RedirectToAction("QuestionsList", "Poll", new { sessionId = sessionID });
+            return RedirectToAction("QuestionsList", "Poll", new { sessionId = HttpContext.Session.GetString("SessionCode") });
         } 
     }
 }

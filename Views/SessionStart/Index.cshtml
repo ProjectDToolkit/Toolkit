@@ -1,5 +1,6 @@
 ﻿@model ProjectD.Models.SessionStartModel
-    <script type="text/javascript">
+
+<script type="text/javascript">
         window.onbeforeunload = function () {
             return "Are you sure that you want to leave the session?";
         }
@@ -30,7 +31,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Vote</h5>
                     @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
-                    <a href="@Url.Action("QuestionsList", "Poll", new { sessionId = "TEST"})" class="btn btn-dark btn-lg">Go</a>
+                    <a href="@Url.Action("QuestionsList", "Poll")" class="btn btn-dark btn-lg">Go</a>
                 </div>
             </div>
         </div>
