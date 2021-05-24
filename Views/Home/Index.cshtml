@@ -11,11 +11,11 @@
         document.getElementById("newCode").value = randomString;
     }</script>
 
-@using (Html.BeginForm("JoinSession", "Home", FormMethod.Post))
+@using (Html.BeginForm("JoinSession", "SessionStart", FormMethod.Post))
 {
  <div class="form-group">
     <label asp-for="JoinSessionCode">Enter your session code</label>
-    @Html.TextBoxFor(m => m.JoinSessionCode, new { @class = "form-control" })
+    @Html.TextBoxFor(m => m.SessionCode, new { @class = "form-control" })
     <br />
     <input type="submit" class="btn btn-dark btn-lg" value="Join Session">
         @ViewBag.Message
@@ -24,11 +24,11 @@
 <br />
     Don't have a session code yet? Create your new session here
 
-@using (Html.BeginForm("CreateSession", "Home", FormMethod.Post))
+@using (Html.BeginForm("CreateSession", "SessionStart", FormMethod.Post))
 {
 <div class="form-group">
     <label asp-for="CreateSessionCode"></label>
-    @Html.TextBoxFor(m => m.CreateSessionCode, new { @hidden = "hidden", @id = "newCode" })
+    @Html.TextBoxFor(m => m.SessionCode, new { @hidden = "hidden", @id = "newCode" })
     <br />
     <input onclick="randomString(6);" type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session">
 </div>
