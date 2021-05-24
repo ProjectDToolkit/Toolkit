@@ -9,6 +9,7 @@ using MySql.Data.MySqlClient;
 using ProjectD.Database;
 using System.Data;
 using Microsoft.AspNetCore.Http;
+using Project_D.Shared;
 
 namespace ProjectD.Controllers
 {
@@ -29,17 +30,19 @@ namespace ProjectD.Controllers
         public IActionResult CreateSession(HomeModel hm)
 		{
             HttpContext.Session.SetString("SessionCode", hm.SessionCode);
+            HttpContext.Session.SetString("UserCode", hm.UserCode);
 
             if (HttpContext.Session.GetString("SessionCode") != null)
 			{
                 string sessionCode = HttpContext.Session.GetString("SessionCode");
+                string userCode = HttpContext.Session.GetString("UserCode");
 
                 MySqlConnection Connection;
                 Connection = new MySqlConnection(Connector.getString());
                 try
                 {
                     Connection.Open();
-                    string stringToInsert = @"INSERT INTO sessions (sessionCode, peopleInSession) VALUES (@SessionCode, 1)";
+                    string stringToInsert = @"INSERT INTO sessions (sessionCode) VALUES (@SessionCode)";
 
                     using (MySqlCommand command = new MySqlCommand(stringToInsert, Connection))
                     {
@@ -51,7 +54,16 @@ namespace ProjectD.Controllers
 
                         if (rowsUpdated > 0)
                         {
-                            ViewBag.SessionMessage = string.Format("Session code: {0}, people online: 1", sessionCode);
+                            // returns a boolean false if usercode is not added yet
+                            if (!Shared.IsUserCodeInSession(userCode, sessionCode))
+							{
+                                // returns a boolean false if code couldnt be added
+                                if (!Shared.AddUserCodeToSession(userCode, sessionCode))
+								{
+                                    ViewBag.SessionMessage = string.Format("Error inserting usercode into session");
+                                }
+                            }
+                            ViewBag.SessionMessage = string.Format("Session code: {0}, people online: {1}", sessionCode, Shared.GetPeopleInSession(sessionCode).ToString());
                             ViewBag.SessionCode = string.Format(sessionCode);
                         }
                         else
@@ -86,49 +98,26 @@ namespace ProjectD.Controllers
         [HttpPost]
         public IActionResult JoinSession(HomeModel hm)
 		{
-            if (DoesSessionExist(hm))
+            if (Shared.DoesSessionExist(hm.SessionCode))
             {
                 HttpContext.Session.SetString("SessionCode", hm.SessionCode);
+                HttpContext.Session.SetString("UserCode", hm.UserCode);
 
                 if (HttpContext.Session.GetString("SessionCode") != null)
                 {
                     string sessionCode = HttpContext.Session.GetString("SessionCode");
+                    string userCode = HttpContext.Session.GetString("UserCode");
 
-                    MySqlConnection Connection;
-                    Connection = new MySqlConnection(Connector.getString());
-                    Connection.Open();
-                    try
+                    // returns a boolean false if usercode is not added yet
+                    if (!Shared.IsUserCodeInSession(userCode, sessionCode))
                     {
-                        // updating the people online
-                        string stringToInsert = @"UPDATE sessions SET peopleInSession = peopleInSession + 1 WHERE sessionCode = @SessionCode;";
-
-                        using (MySqlCommand command = new MySqlCommand(stringToInsert, Connection))
+                        // returns a boolean false if code couldnt be added
+                        if (!Shared.AddUserCodeToSession(userCode, sessionCode))
                         {
-                            // Add parameters here
-                            command.Parameters.AddWithValue("@SessionCode", sessionCode);
-
-                            command.Prepare();
-                            int rowsUpdated = command.ExecuteNonQuery();
-
-                            if (rowsUpdated > 0)
-                            {
-                                ViewBag.SessionMessage = string.Format("Session code: {0}, People online: {1}", sessionCode, GetPeopleInSession(sessionCode).ToString());
-                                ViewBag.SessionCode = string.Format(sessionCode);
-                            }
-                            else
-                            {
-                                ViewBag.SessionMessage = string.Format("Error updating people online");
-                            }
+                            ViewBag.SessionMessage = string.Format("Error inserting usercode into session");
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw;
-                    }
-                    finally
-                    {
-                        Connection.Close();
-                    }
+                    }     
+                    ViewBag.SessionMessage = string.Format("Session code: {0}, User code: {1}, People online: {2}", sessionCode, userCode, Shared.GetPeopleInSession(sessionCode).ToString());
                 }
                 else
                 {
@@ -142,33 +131,127 @@ namespace ProjectD.Controllers
             }
         }
                      
-
-        public IActionResult LeaveSession(string SessionCode)
+       
+        public IActionResult LeaveSession()
 		{
+            string sessionCode = HttpContext.Session.GetString("SessionCode");
+            string userCode = HttpContext.Session.GetString("UserCode");
+            // check if there's a session code in the session/cookies
+            if (HttpContext.Session.GetString("SessionCode") != null)
+            {
+                //string sessionCode = HttpContext.Session.GetString("SessionCode");
+                //string userCode = HttpContext.Session.GetString("UserCode");
+
+                // check if session exists in the db
+                if (Shared.DoesSessionExist(sessionCode))
+                {
+                    // less than or equal to 1 people left in the session, delete the entire session
+                    if (Shared.GetPeopleInSession(sessionCode) <= 1)
+					{
+                        // code to delete entire session
+                        if (DeleteEntireSession(sessionCode))
+						{
+                            // code to delete user from session
+                            if (DeleteUserFromSession(userCode, sessionCode))
+                            {
+                                return RedirectToAction("Index", "Home", new { message = "Session Left" });
+                            }
+                            else
+                            {
+                                return RedirectToAction("Index", "Home", new { message = "Error while leaving session (could not delete user from session)" });
+                            }
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home", new { message = "Error while leaving session (could not delete entire session)" });
+                        }
+                    }
+                    else
+					{
+                        if (DeleteUserFromSession(userCode, sessionCode))
+						{
+                            return RedirectToAction("Index", "Home", new { message = "Session Left" });
+                        }
+                        else
+						{
+                            return RedirectToAction("Index", "Home", new { message = "Error while leaving session (could not delete user from session)" });
+                        }
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home", new { message = "Error while leaving session (sessioncode does not exist in db)" });
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { message = "Error while leaving session (sessioncode does not exist in session)" });
+            }
+        }
+
+        public bool DeleteEntireSession(string sessionCode)
+        {
             MySqlConnection Connection;
             Connection = new MySqlConnection(Connector.getString());
             Connection.Open();
             try
             {
-                // updating the people online
-                string stringToInsert = @"UPDATE sessions SET peopleInSession = peopleInSession - 1 WHERE sessionCode = @SessionCode;";
+                string stringToInsert = @"DELETE FROM database.sessions WHERE sessionCode = @SessionCode;";
 
                 using (MySqlCommand command = new MySqlCommand(stringToInsert, Connection))
                 {
                     // Add parameters here
-                    command.Parameters.AddWithValue("@SessionCode", SessionCode);
+                    command.Parameters.AddWithValue("@SessionCode", sessionCode);
 
                     command.Prepare();
                     int rowsUpdated = command.ExecuteNonQuery();
 
                     if (rowsUpdated > 0)
                     {
-                        return RedirectToAction("Index", "Home", new { message = "Session Left" });
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                Connection.Close();
+            }
+        }
+
+        public bool DeleteUserFromSession(string userCode, string sessionCode)
+		{
+            MySqlConnection Connection;
+            Connection = new MySqlConnection(Connector.getString());
+            Connection.Open();
+            try
+            {
+                string stringToInsert = @"DELETE FROM database.usersinsession WHERE usercode = @UserCode AND sessioncode = @SessionCode;";
+
+                using (MySqlCommand command = new MySqlCommand(stringToInsert, Connection))
+                {
+                    // Add parameters here
+                    command.Parameters.AddWithValue("@UserCode", userCode);
+                    command.Parameters.AddWithValue("@SessionCode", sessionCode);
+
+                    command.Prepare();
+                    int rowsUpdated = command.ExecuteNonQuery();
+
+                    if (rowsUpdated > 0)
+                    {
+                        return true;
 
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home", new { message = "Error while leaving session" });
+                        return false;
                     }
                 }
             }
@@ -181,89 +264,5 @@ namespace ProjectD.Controllers
                 Connection.Close();
             }
         }
-
-        /// <summary>
-		/// Checks if a session code exists in the database
-		/// </summary>
-		/// <param name="hm">home model with session code</param>
-		/// <returns></returns>
-        public bool DoesSessionExist(HomeModel hm)
-		{
-            MySqlConnection Connection;
-            Connection = new MySqlConnection(Connector.getString());
-
-            try
-            {
-                Connection.Open();
-                string stringToRead = @"SELECT DISTINCT sessionCode FROM database.sessions where sessionCode = @SessionCode";
-                MySqlCommand command = new MySqlCommand(stringToRead, Connection);
-
-                // Add parameters here
-                command.Parameters.AddWithValue("@SessionCode", hm.SessionCode);
-
-                MySqlDataReader reader = command.ExecuteReader();
-                if (!reader.HasRows)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            finally
-            {
-                Connection.Close();
-            }
-        }
-    
-
-        /// <summary>
-		/// return int with amount of people currently in the session
-		/// </summary>
-		/// <param name="sessionCode">the current session code</param>
-		/// <returns></returns>
-		public int GetPeopleInSession(string sessionCode)
-		{
-            int peopleOnline = 0;
-
-            MySqlConnection Connection;
-            Connection = new MySqlConnection(Connector.getString());
-
-            try
-            {
-                Connection.Open();
-                string stringToRead = @"SELECT DISTINCT sessionCode, peopleInSession FROM database.sessions WHERE sessionCode = @SessionCode";
-                MySqlCommand command = new MySqlCommand(stringToRead, Connection);
-
-                // Add parameters here
-                command.Parameters.AddWithValue("@SessionCode", sessionCode);
-
-
-                using (MySqlDataReader myReader = command.ExecuteReader())
-                {
-                    myReader.Read();
-
-                    // update int with peopleonline and close the db
-                    peopleOnline = Int32.Parse(myReader["peopleInSession"].ToString());
-                    Connection.Close();
-
-                    //return current amount of people in the session
-                    return peopleOnline;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            finally
-            {
-                Connection.Close();
-            }
-        }
-	}
+    }
 }
