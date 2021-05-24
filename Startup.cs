@@ -3,6 +3,7 @@
 //
 // Generated with Bot Builder V4 SDK Template for Visual Studio EchoBot v4.6.2
 
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -26,6 +27,15 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             services.AddControllers();
             services.AddMvc();
 
@@ -56,6 +66,7 @@ namespace Microsoft.Teams.Samples.HelloWorld.Web
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseWebSockets();
+            app.UseSession();
 
             // Runs matching. An endpoint is selected and set on the HttpContext if a match is found.
             app.UseRouting();
