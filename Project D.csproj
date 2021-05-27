@@ -31,5 +31,6 @@
     <ItemGroup>
       <Folder Include="Views\SessionStart\" />
       <Folder Include="Database\" />
+      <Folder Include="Shared\" />
     </ItemGroup>
 </Project>
