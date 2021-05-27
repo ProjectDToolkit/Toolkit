@@ -1,25 +1,44 @@
 ﻿
 @model ProjectD.Models.HomeModel
 
-<script>function randomString(len, charSet) {
-        charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+<script>
+    function bothCodes(element) {
+        randomSessionCode();
+        randomUserCode(element);
+    }
+
+    function randomSessionCode()
+    {
+        charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         var randomString = '';
-        for (var i = 0; i < len; i++) {
+        for (var i = 0; i < 6; i++) {
             var randomPoz = Math.floor(Math.random() * charSet.length);
             randomString += charSet.substring(randomPoz, randomPoz + 1);
         }
         document.getElementById("newCode").value = randomString;
-    }</script>
+    }
+
+    function randomUserCode(element) {
+        charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        var randomString = '';
+        for (var i = 0; i < 6; i++) {
+            var randomPoz = Math.floor(Math.random() * charSet.length);
+            randomString += charSet.substring(randomPoz, randomPoz + 1);
+        }
+        document.getElementById(element).value = randomString;
+    }
+</script>
 
 @using (Html.BeginForm("JoinSession", "SessionStart", FormMethod.Post))
 {
- <div class="form-group">
+<div class="form-group">
     <label asp-for="JoinSessionCode">Enter your session code</label>
     @Html.TextBoxFor(m => m.SessionCode, new { @class = "form-control" })
+    @Html.TextBoxFor(m => m.UserCode, new { @hidden = "hidden", @id = "userCode1" })
     <br />
-    <input type="submit" class="btn btn-dark btn-lg" value="Join Session">
-        @ViewBag.Message
- </div>
+    <input onclick="randomUserCode('userCode1');" type="submit" class="btn btn-dark btn-lg" value="Join Session">
+    @ViewBag.Message
+</div>
 }
 <br />
     Don't have a session code yet? Create your new session here
@@ -29,7 +48,8 @@
 <div class="form-group">
     <label asp-for="CreateSessionCode"></label>
     @Html.TextBoxFor(m => m.SessionCode, new { @hidden = "hidden", @id = "newCode" })
+    @Html.TextBoxFor(m => m.UserCode, new { @hidden = "hidden", @id = "userCode2" })
     <br />
-    <input onclick="randomString(6);" type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session">
+    <input onclick="bothCodes('userCode2')" type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session">
 </div>
 }
