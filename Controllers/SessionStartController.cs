@@ -18,9 +18,6 @@ namespace ProjectD.Controllers
         
         public IActionResult Index()
         {
-            string sessionCode = HttpContext.Session.GetString("SessionCode");
-            string userCode = HttpContext.Session.GetString("UserCode");
-            ViewBag.SessionMessage = string.Format("Session code: {0}, User code: {1}, People online: {2}", sessionCode, userCode, Shared.GetPeopleInSession(sessionCode).ToString());
             return View();
         }
 
