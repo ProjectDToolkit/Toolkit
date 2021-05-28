@@ -1,73 +1,49 @@
 ﻿@model ProjectD.Models.SessionStartModel
     <!-- Leave alert function -->
-    <script>window.onbeforeunload = function () {
-            return "Are you sure that you want to leave the session?";
-        }</script>
-
-    <!-- copy to clipboard function -->
-    <script>function copyCode() {
-            const str = document.getElementById('myInput').innerText
-            const el = document.createElement('textarea')
-            el.value = str
-            el.setAttribute('readonly', '')
-            el.style.position = 'absolute'
-            el.style.left = '-9999px'
-            document.body.appendChild(el)
-            el.select()
-            document.execCommand('copy')
-            document.body.removeChild(el)
-        }</script>
-
-    <nav class="navbar sticky-top navbar-light bg-light">
-        <a class="navbar-brand" id="sessioncode" href="#" onclick="copyCode()">
-            <!-- Session code message -->
-            @ViewBag.SessionMessage
-        </a>
-        <div hidden="hidden" id="myInput">@ViewBag.SessionCode</div>
-        <button class="btn btn-info btn-sm" onclick="copyCode()">Copy Session Code</button>
-    </nav>
-
-
-    <div class="container">
+@*<script>window.onbeforeunload = function () {
+        return "Are you sure that you want to leave the session?";
+    }</script>*@
+<div class="container">
+    <br />
+    @ViewBag.SessionMessage
+    <div class="row">
+        <div class="col-sm-6" style="margin-top:10px">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Whiteboard</h5>
+                    @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
+                <a href="@Url.Action("Index", "Whiteboard")" class="btn btn-dark btn-lg">Go</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6" style="margin-top:10px">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Vote</h5>
+                    @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
+                    <a href="@Url.Action("Index", "Poll")" class="btn btn-dark btn-lg">Go</a>
+                </div>
+            </div>
+        </div>
         <br />
-        <div class="row">
-            <div class="col-sm-6" style="margin-top:10px">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Whiteboard</h5>
-                        @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
-                        <a href="#" class="btn btn-dark btn-lg">Go</a>
-                    </div>
+        <div class="col-sm-6" style="margin-top:10px">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Upload files</h5>
+                    @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
+                    <a href="#" class="btn btn-dark btn-lg">Go</a>
                 </div>
             </div>
-            <div class="col-sm-6" style="margin-top:10px">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Vote</h5>
-                        @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
-                        <a href="@Url.Action("Index", "Poll")" class="btn btn-dark btn-lg">Go</a>
-                    </div>
-                </div>
-            </div>
-            <br />
-            <div class="col-sm-6" style="margin-top:10px">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Upload files</h5>
-                        @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
-                        <a href="#" class="btn btn-dark btn-lg">Go</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6" style="margin-top:10px">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Leave Session</h5>
-                        @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
-                        <a href="@Url.Action("LeaveSession", "SessionStart")" class="btn btn-dark btn-lg">Go</a>
-                    </div>
+        </div>
+        <div class="col-sm-6" style="margin-top:10px">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Leave Session</h5>
+                    @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
+                    <a href="@Url.Action("LeaveSession", "SessionStart")" class="btn btn-dark btn-lg">Go</a>
                 </div>
             </div>
         </div>
     </div>
+</div>
 

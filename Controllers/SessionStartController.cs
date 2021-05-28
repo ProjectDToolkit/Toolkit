@@ -63,8 +63,6 @@ namespace ProjectD.Controllers
                                     ViewBag.SessionMessage = string.Format("Error inserting usercode into session");
                                 }
                             }
-                            ViewBag.SessionMessage = string.Format("Session code: {0}, people online: {1}", sessionCode, Shared.GetPeopleInSession(sessionCode).ToString());
-                            ViewBag.SessionCode = string.Format(sessionCode);
                         }
                         else
                         {
@@ -117,7 +115,6 @@ namespace ProjectD.Controllers
                             ViewBag.SessionMessage = string.Format("Error inserting usercode into session");
                         }
                     }     
-                    ViewBag.SessionMessage = string.Format("Session code: {0}, User code: {1}, People online: {2}", sessionCode, userCode, Shared.GetPeopleInSession(sessionCode).ToString());
                 }
                 else
                 {
@@ -139,8 +136,6 @@ namespace ProjectD.Controllers
             // check if there's a session code in the session/cookies
             if (HttpContext.Session.GetString("SessionCode") != null)
             {
-                //string sessionCode = HttpContext.Session.GetString("SessionCode");
-                //string userCode = HttpContext.Session.GetString("UserCode");
 
                 // check if session exists in the db
                 if (Shared.DoesSessionExist(sessionCode))

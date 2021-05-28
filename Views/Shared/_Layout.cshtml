@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@using Project_D.Shared;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Microsoft Teams Hello World Sample App</title>
@@ -12,8 +16,33 @@
 
 <body class="theme-light">
 
-    <div class="surface"> 
+    <div class="surface">
         <div class="panel">
+
+            <!-- copy to clipboard function -->
+            <script>function copyCode() {
+                    const str = document.getElementById('myInput').innerText
+                    const el = document.createElement('textarea')
+                    el.value = str
+                    el.setAttribute('readonly', '')
+                    el.style.position = 'absolute'
+                    el.style.left = '-9999px'
+                    document.body.appendChild(el)
+                    el.select()
+                    document.execCommand('copy')
+                    document.body.removeChild(el)
+                }</script>
+
+            <nav class="navbar sticky-top navbar-light bg-light">
+                <a class="navbar-brand" id="sessioncode" href="#" onclick="copyCode()">
+                    @{string sessionCode = HttpContextAccessor.HttpContext.Session.GetString("SessionCode");}
+                    Session code: @HttpContextAccessor.HttpContext.Session.GetString("SessionCode"), User code: @HttpContextAccessor.HttpContext.Session.GetString("UserCode"), People online: @Shared.GetPeopleInSession(sessionCode).ToString()
+                </a>
+                <div hidden="hidden" id="myInput">@ViewBag.SessionCode</div>
+                <button class="btn btn-info btn-sm" onclick="copyCode()">Copy Session Code</button>
+            </nav>
+
+
             @RenderBody()
         </div>
     </div>
