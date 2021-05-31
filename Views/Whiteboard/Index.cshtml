@@ -11,18 +11,9 @@
 
 <!DOCTYPE html>
 <html>
-<body>
+<body onload="myFunction()">
     <script src="http://zwibbler.com/zwibbler-demo.js"></script>
-    <div id="top">
-        <button id="join-button">
-            Join shared session
-        </button> 
-    </div>
     <div id="whiteboard"></div>
-
-    <div>
-        @{string whiteboardSessionCode = HttpContextAccessor.HttpContext.Session.GetString("WhiteboardSessionCode");}
-    </div>
 
 </body>
 </html>
@@ -54,13 +45,10 @@
         // options
     });
 
-    var nameInput = document.querySelector("#name");
-
-    document.querySelector("#join-button").addEventListener("click", function () {
-
+    function myFunction() {
         var name = "@HttpContextAccessor.HttpContext.Session.GetString("WhiteboardSessionCode")"
         if (name) {
             ctx.joinSharedSession(name);
         }
-    });
+    }
 </script>
