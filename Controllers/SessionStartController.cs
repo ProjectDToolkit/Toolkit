@@ -283,7 +283,7 @@ namespace ProjectD.Controllers
                
                 while (myReader.Read())
                 {
-                    wscode = $"{myReader.GetString("whiteboardSessionCode")};";   
+                    wscode = $"{myReader.GetString("whiteboardSessionCode")}";   
                 }
 
                 return wscode;
