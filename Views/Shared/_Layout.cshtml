@@ -21,7 +21,7 @@
 
             <!-- copy to clipboard function -->
             <script>function copyCode() {
-                    const str = document.getElementById('myInput').innerText
+                    const str = "@HttpContextAccessor.HttpContext.Session.GetString("SessionCode")"
                     const el = document.createElement('textarea')
                     el.value = str
                     el.setAttribute('readonly', '')
