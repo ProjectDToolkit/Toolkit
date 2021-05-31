@@ -3,22 +3,30 @@
 *@
 @{
 }
+@using Microsoft.AspNetCore.Http
+@using Project_D.Shared;
+@model ProjectD.Models.WhiteboardModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 <!DOCTYPE html>
 <html>
 <body>
     <script src="http://zwibbler.com/zwibbler-demo.js"></script>
     <div id="top">
-        <button id="share-button">
-            Share Whiteboard Now
-        </button>
         <button id="join-button">
             Join shared session
-        </button>
-        <input id="name" readonly>
+        </button> 
     </div>
     <div id="whiteboard"></div>
+
+    <div>
+        @{string whiteboardSessionCode = HttpContextAccessor.HttpContext.Session.GetString("WhiteboardSessionCode");}
+    </div>
+
 </body>
 </html>
+
 <style>
     #whiteboard {
         position: absolute;
@@ -33,13 +41,14 @@
         left: 0;
         right: 0;
         height: 50px;
-        top:75px;
+        top: 75px;
     }
 
     body {
         overflow: hidden;
     }
 </style>
+
 <script src="http://zwibbler.com/zwibbler-demo.js"></script>
 <script>var ctx = Zwibbler.create("#whiteboard", {
         // options
@@ -47,16 +56,10 @@
 
     var nameInput = document.querySelector("#name");
 
-    document.querySelector("#share-button").addEventListener("click", function () {
-        var name = ctx.createSharedSession();
-        prompt("Join this session in another window", name);
-        nameInput.value = name;
-    });
-
     document.querySelector("#join-button").addEventListener("click", function () {
-        var name = prompt("Please enter the session name");
+
+        var name = "@HttpContextAccessor.HttpContext.Session.GetString("WhiteboardSessionCode")"
         if (name) {
             ctx.joinSharedSession(name);
-            nameInput.value = name;
         }
     });</script>

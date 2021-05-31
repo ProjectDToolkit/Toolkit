@@ -31,23 +31,26 @@ namespace ProjectD.Controllers
 		{
             HttpContext.Session.SetString("SessionCode", hm.SessionCode);
             HttpContext.Session.SetString("UserCode", hm.UserCode);
+            HttpContext.Session.SetString("WhiteboardSessionCode", hm.WhiteboardSessionCode);
 
             if (HttpContext.Session.GetString("SessionCode") != null)
 			{
                 string sessionCode = HttpContext.Session.GetString("SessionCode");
                 string userCode = HttpContext.Session.GetString("UserCode");
+                string whiteboardSessionCode = HttpContext.Session.GetString("WhiteboardSessionCode");
 
                 MySqlConnection Connection;
                 Connection = new MySqlConnection(Connector.getString());
                 try
                 {
                     Connection.Open();
-                    string stringToInsert = @"INSERT INTO sessions (sessionCode) VALUES (@SessionCode)";
+                    string stringToInsert = @"INSERT INTO sessions (sessionCode, whiteboardSessionCode) VALUES (@SessionCode, @WhiteboardSessionCode)";
 
                     using (MySqlCommand command = new MySqlCommand(stringToInsert, Connection))
                     {
                         // Add parameters here
                         command.Parameters.AddWithValue("@SessionCode", sessionCode);
+                        command.Parameters.AddWithValue("@WhiteboardSessionCode", whiteboardSessionCode);
 
                         command.Prepare();
                         int rowsUpdated = command.ExecuteNonQuery();

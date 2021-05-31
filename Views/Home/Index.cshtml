@@ -4,9 +4,11 @@
 
 @model ProjectD.Models.HomeModel
 
+<script src="http://zwibbler.com/zwibbler-demo.js"></script>
 <script>function bothCodes(element) {
         randomSessionCode();
         randomUserCode(element);
+        randomWhiteboardSessionCode();
     }
 
     function randomSessionCode() {
@@ -27,7 +29,18 @@
             randomString += charSet.substring(randomPoz, randomPoz + 1);
         }
         document.getElementById(element).value = randomString;
-    }</script>
+    }
+
+    function randomWhiteboardSessionCode() {
+        var name = "";
+        var ctx = Zwibbler.create("#whiteboard", {
+            // options
+        });
+
+        name = ctx.createSharedSession();
+        document.getElementById("whiteboardSessionCode").value = name;
+    }
+</script>
 
 @using (Html.BeginForm("JoinSession", "SessionStart", FormMethod.Post))
 {
@@ -35,21 +48,22 @@
         <label asp-for="JoinSessionCode">Enter your session code</label>
         @Html.TextBoxFor(m => m.SessionCode, new { @class = "form-control" })
         @Html.TextBoxFor(m => m.UserCode, new { @hidden = "hidden", @id = "userCode1" })
-        <br />
+        <br>
         <input onclick="randomUserCode('userCode1');" type="submit" class="btn btn-dark btn-lg" value="Join Session">
         @ViewBag.Message
     </div>
-}
-<br />
+ }
+<br>
     Don't have a session code yet? Create your new session here
 
 @using (Html.BeginForm("CreateSession", "SessionStart", FormMethod.Post))
-{
+{   <div class="d-none" id="whiteboard"></div>
     <div class="form-group">
         <label asp-for="CreateSessionCode"></label>
         @Html.TextBoxFor(m => m.SessionCode, new { @hidden = "hidden", @id = "newCode" })
         @Html.TextBoxFor(m => m.UserCode, new { @hidden = "hidden", @id = "userCode2" })
-        <br />
-        <input onclick="bothCodes('userCode2')" type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session">
+        @Html.TextBoxFor(m => m.WhiteboardSessionCode, new { @hidden = "hidden", @id = "whiteboardSessionCode" })
+        <br>
+        <input onclick="bothCodes('userCode2', 'whiteboardSessionCode')" type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session">
     </div>
-}
+ }
