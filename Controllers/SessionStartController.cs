@@ -103,6 +103,8 @@ namespace ProjectD.Controllers
             {
                 HttpContext.Session.SetString("SessionCode", hm.SessionCode);
                 HttpContext.Session.SetString("UserCode", hm.UserCode);
+                string wbsc = GetWhiteboardSessionCode(HttpContext.Session.GetString("SessionCode"));
+                HttpContext.Session.SetString("WhiteboardSessionCode", wbsc);
 
                 if (HttpContext.Session.GetString("SessionCode") != null)
                 {
@@ -252,6 +254,39 @@ namespace ProjectD.Controllers
                         return false;
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                Connection.Close();
+            }
+        }
+
+        public string GetWhiteboardSessionCode(string sessionCode)
+        {
+            MySqlConnection Connection;
+            Connection = new MySqlConnection(Connector.getString());
+            Connection.Open();
+            string wscode = "";
+            try {
+      
+                string sql = @"SELECT whiteboardSessionCode FROM database.sessions WHERE @sessionCode = sessionCode;";
+                MySqlCommand cmd = new MySqlCommand(sql, Connection);
+
+                MySqlDataReader myReader;
+                cmd.Parameters.AddWithValue("@sessionCode", sessionCode);
+
+                myReader = cmd.ExecuteReader();
+               
+                while (myReader.Read())
+                {
+                    wscode = $"{myReader.GetString("whiteboardSessionCode")};";   
+                }
+
+                return wscode;
             }
             catch (Exception ex)
             {
