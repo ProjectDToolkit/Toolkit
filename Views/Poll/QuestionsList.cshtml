@@ -1,6 +1,9 @@
 ﻿@using ProjectD.Models
 @model IEnumerable<QuestionModel>
-
+<br />
+<a href="@Url.Action("Index", "SessionStart")" class="btn btn-dark btn-lg">Back to menu</a>
+<br />
+<br />
 @if (Model.Any())
 {
     <div class="container bootstrap snippets bootdey">
@@ -41,7 +44,7 @@
 }
 else
 {
-    <input type="button" class="btn btn-primary" title="Create a Poll" onclick="location.href='@Url.Action("Index", "Poll", new { sessionId = "TEST1" })'"/>
+    <input type="button" class="btn btn-primary" title="Create a Poll" value="Create a Poll" onclick="location.href='@Url.Action("Index", "Poll", new { sessionId = "TEST1" })'"/>
     <h2>No questions to view</h2>
     <h3>Create a question Now!</h3>
 }
