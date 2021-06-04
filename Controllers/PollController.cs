@@ -130,14 +130,7 @@ namespace Project_D.Controllers
         [HttpPost]
         public IActionResult QuestionsList(int id)
         {
-            if (id > 0 || false)
-            {
-                return RedirectToAction("Vote", "Poll", new { ID = id });
-            }
-            else
-            {
-                return RedirectToAction("Result", "Poll", new { ID = 9 });
-            }
+            return RedirectToAction("Vote", "Poll", new { ID = id });
         }
 
 
