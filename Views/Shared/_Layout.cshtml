@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Microsoft Teams Hello World Sample App</title>
+    <title>Project D Toolkit</title>
     <base href="@(Url.Content("~"))" />
     <link href="/Content/msteams-16.css" rel="stylesheet" />
     <link href="/Content/Site.css" rel="stylesheet" />
@@ -35,11 +35,11 @@
 
             <nav class="navbar sticky-top navbar-light bg-light">
                 <div class="container-fluid" id="sessioncode" href="#" onclick="copyCode()">
-                    <span class="navbar-text" style= "font-size: calc(6em - 3.5vw);line-height:normal">
+                    <span class="navbar-text" style="font-size: calc(6em - 3.5vw);line-height:normal">
                         Session code:
                         <a href="#" onclick="copyCode()">@HttpContextAccessor.HttpContext.Session.GetString("SessionCode")</a>
-                        People online: @Shared.GetPeopleInSession(sessionCode).ToString()
-                        (Debug only: <a> User code: @HttpContextAccessor.HttpContext.Session.GetString("UserCode"), Whiteboardcode: @HttpContextAccessor.HttpContext.Session.GetString("WhiteboardSessionCode")</a>)
+                        People online: @Shared.GetPeopleInSession(sessionCode).ToString()</a>
+                        <!--<a>(Debug only: <a> User code: HttpContextAccessor.HttpContext.Session.GetString("UserCode"), Whiteboardcode: HttpContextAccessor.HttpContext.Session.GetString("WhiteboardSessionCode")</a>)-->
                     </span>
                     <form class="d-flex">
                         <button class="btn btn-outline-info" onclick="copyCode()">Copy Session Code</button>
