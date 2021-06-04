@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html>
 <body onload="myFunction()">
-    <script src="http://zwibbler.com/zwibbler-demo.js"></script>
+    <script src="https://zwibbler.com/zwibbler-demo.js"></script>
     <div id="whiteboard"></div>
 
 </body>
@@ -24,23 +24,16 @@
         left: 0;
         right: 0;
         bottom: 0;
-        top: 110px;
+        top: calc(200px - 5vw);
     }
-
-    #top {
-        position: absolute;
-        left: 0;
-        right: 0;
-        height: 50px;
-        top: 75px;
-    }
+    
 
     body {
         overflow: hidden;
     }
 </style>
 
-<script src="http://zwibbler.com/zwibbler-demo.js"></script>
+<script src="https://zwibbler.com/zwibbler-demo.js"></script>
 <script>var ctx = Zwibbler.create("#whiteboard", {
         // options
     });
