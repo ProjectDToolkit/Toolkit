@@ -1,9 +1,6 @@
 ﻿@using ProjectD.Models
 @model IEnumerable<QuestionModel>
 <br />
-<a href="@Url.Action("Index", "SessionStart")" class="btn btn-dark btn-lg">Back to menu</a>
-<br />
-<br />
 @if (Model.Any())
 {
     <div class="container bootstrap snippets bootdey">
@@ -16,6 +13,7 @@
                                 <thead>
                                     <tr>
                                         <th><span>Poll</span></th>
+                                        <th>&nbsp;</th>
                                         <th>&nbsp;</th>
                                     </tr>
                                 </thead>
@@ -30,6 +28,9 @@
                                                 <form method="post" asp-action="QuestionsList" asp-controller="Poll">
                                                     <button type="submit" name="id" value="@question.questionId" class="btn btn-primary">Vote on Poll</button>
                                                 </form>
+                                            </td>
+                                            <td style="width: 15%;">
+                                                <input type="button" class="btn btn-primary" title="Result" value="Results" onclick="location.href='@Url.Action("Result", "Poll", new { id = $"{question.questionId}" })'" />
                                             </td>
                                         </tr>
                                     </tbody>

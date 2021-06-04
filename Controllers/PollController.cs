@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using ProjectD.Database;
 using ProjectD.Models;
 using System;
 using System.Collections.Generic;
+using static Project_D.Models.ResultModelcs;
 
 namespace Project_D.Controllers
 {
@@ -143,6 +145,8 @@ namespace Project_D.Controllers
             string answerA = "";
             string answerB = "";
 
+            QID = id;
+
             MySqlConnection connection;
             connection = new MySqlConnection(Connector.getString());
             try
@@ -210,6 +214,56 @@ namespace Project_D.Controllers
                 connection.Close();
             }
             return RedirectToAction("QuestionsList", "Poll", new { sessionId = HttpContext.Session.GetString("SessionCode") });
-        } 
+        }
+        
+        public IActionResult Result(int id)
+        {
+            List<DataPoint> dataPoints = new List<DataPoint>();
+
+            MySqlConnection connection;
+            connection = new MySqlConnection(Connector.getString());
+            try
+            {
+                connection.Open();
+
+                string query = $"SELECT * FROM database.polls WHERE id = '{id}';";
+
+                MySqlCommand command = new MySqlCommand(query, connection);
+                MySqlDataReader reader;
+                reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int totalvotes = reader.GetInt32("totalVotes");
+
+                    string answerA = reader.GetString("answerA");
+                    int votesA = reader.GetInt32("votesA");
+                    
+                    float percA = votesA / totalvotes;
+
+                    dataPoints.Add(new DataPoint(answerA, votesA));
+
+                    string answerB = reader.GetString("answerB");
+                    int votesB = reader.GetInt32("votesB");
+                    int percB = (votesA / totalvotes) * 100;
+
+                    
+                    dataPoints.Add(new DataPoint(answerB, votesB));
+
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+
+            return View();
+        }
     }
 }
