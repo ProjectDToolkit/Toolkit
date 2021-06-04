@@ -1,16 +1,23 @@
-﻿@model Project_D.Models.PollModel
+﻿
+@model ProjectD.Models.PollModel
 
-<div class="font-semibold font-title">
-    Create a poll
-</div>
-<br />
-<form method="post" asp-action="SubmitPoll" asp-controller="Poll">
+<form method="post" asp-action="Index" asp-controller="Poll" class="form-group">
     <div class="form-group">
-        <p> What do you want to poll?</p>
-        <label asp-for="PollQuestion"></label>
-        <input asp-for="PollQuestion" name="PollQuestion" />
-    </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-dark btn-lg" value="Create Poll" />
+
+        <h1>Enter a question that you want to poll</h1>
+        <br />
+        <p style="color:red;">@ViewBag.ErrorMessage</p>
+        <label asp-for="Question"></label>
+        <input asp-for="Question" name="Question" class="form-control" />
+        <br />
+        <br />
+        <br />
+        <label asp-for="AnswerA">Answer A</label>
+        <input asp-for="AnswerA" name="AnswerA" class="form-control" />
+        <br />
+        <label asp-for="AnswerB">Answer B</label>
+        <input asp-for="AnswerB" name="AnswerB" class="form-control" />
+        <br />
+        <input type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Poll">
     </div>
 </form>

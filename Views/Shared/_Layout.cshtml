@@ -1,7 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@using Project_D.Shared;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{string sessionCode = HttpContextAccessor.HttpContext.Session.GetString("SessionCode");}
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Microsoft Teams Hello World Sample App</title>
+    <title>Project D Toolkit</title>
     <base href="@(Url.Content("~"))" />
     <link href="/Content/msteams-16.css" rel="stylesheet" />
     <link href="/Content/Site.css" rel="stylesheet" />
@@ -12,8 +16,39 @@
 
 <body class="theme-light">
 
-    <div class="surface"> 
+    <div class="surface">
         <div class="panel">
+
+            <!-- copy to clipboard function -->
+            <script>function copyCode() {
+                    const str = "@HttpContextAccessor.HttpContext.Session.GetString("SessionCode")"
+                    const el = document.createElement('textarea')
+                    el.value = str
+                    el.setAttribute('readonly', '')
+                    el.style.position = 'absolute'
+                    el.style.left = '-9999px'
+                    document.body.appendChild(el)
+                    el.select()
+                    document.execCommand('copy')
+                    document.body.removeChild(el)
+                }</script>
+
+            <nav class="navbar sticky-top navbar-light bg-light">
+                <div class="container-fluid" id="sessioncode" href="#" onclick="copyCode()">
+                    <span class="navbar-text" style="font-size: calc(6em - 3.5vw);line-height:normal">
+                        Session code:
+                        <a href="#" onclick="copyCode()">@HttpContextAccessor.HttpContext.Session.GetString("SessionCode")</a>
+                        People online: @Shared.GetPeopleInSession(sessionCode).ToString()</a>
+                        <!--<a>(Debug only: <a> User code: HttpContextAccessor.HttpContext.Session.GetString("UserCode"), Whiteboardcode: HttpContextAccessor.HttpContext.Session.GetString("WhiteboardSessionCode")</a>)-->
+                    </span>
+                    <form class="d-flex">
+                        <button class="btn btn-outline-info" onclick="copyCode()">Copy Session Code</button>
+                    </form>
+                </div>
+
+            </nav>
+
+
             @RenderBody()
         </div>
     </div>
