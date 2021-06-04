@@ -1,14 +1,17 @@
-﻿
+﻿@{
+    Layout = "~/Views/Shared/_LayoutWithoutNav.cshtml";
+}
+
 @model ProjectD.Models.HomeModel
 
-<script>
-    function bothCodes(element) {
+<script src="https://zwibbler.com/zwibbler-demo.js"></script>
+<script>function bothCodes(element) {
         randomSessionCode();
         randomUserCode(element);
+        randomWhiteboardSessionCode();
     }
 
-    function randomSessionCode()
-    {
+    function randomSessionCode() {
         charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         var randomString = '';
         for (var i = 0; i < 6; i++) {
@@ -27,29 +30,61 @@
         }
         document.getElementById(element).value = randomString;
     }
+
+    function randomWhiteboardSessionCode() {
+        var name = "";
+        var ctx = Zwibbler.create("#whiteboard", {
+            // options
+        });
+
+        name = ctx.createSharedSession();
+        document.getElementById("whiteboardSessionCode").value = name;
+    }
 </script>
+<div class="row" style="line-height:normal">
+    @using (Html.BeginForm("JoinSession", "SessionStart", FormMethod.Post))
+    {
+        
+    <div class="col-lg-6" style="margin-top:10px">
+        <div class="form-group text-center">
+            <div class="card text-center" >
+                <div class="card-body">
+                    <label class="card-title"  asp-for="JoinSessionCode" style="font-size: calc(6em - 3.5vw);">Enter your session code</label>
+                    <p class="card-text">
+                        @Html.TextBoxFor(m => m.SessionCode, new { @class = "form-control", style= "font-size: calc(6em - 3.5vw);" })
+                        @Html.TextBoxFor(m => m.UserCode, new { @hidden = "hidden", @id = "userCode1" })
+                    </p>
+                    <p style= "font-size: calc(6em - 3.5vw);">
+                        @ViewBag.Message
+                    </p>
+                    <input onclick="randomUserCode('userCode1');" type="submit" class="btn btn-info btn-block btn-lg text-white" style="width: 100%; font-size: calc(6em - 3.5vw);" value="Join Session">
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+   
 
-@using (Html.BeginForm("JoinSession", "SessionStart", FormMethod.Post))
-{
-<div class="form-group">
-    <label asp-for="JoinSessionCode">Enter your session code</label>
-    @Html.TextBoxFor(m => m.SessionCode, new { @class = "form-control" })
-    @Html.TextBoxFor(m => m.UserCode, new { @hidden = "hidden", @id = "userCode1" })
-    <br />
-    <input onclick="randomUserCode('userCode1');" type="submit" class="btn btn-dark btn-lg" value="Join Session">
-    @ViewBag.Message
-</div>
-}
-<br />
-    Don't have a session code yet? Create your new session here
 
-@using (Html.BeginForm("CreateSession", "SessionStart", FormMethod.Post))
-{
-<div class="form-group">
-    <label asp-for="CreateSessionCode"></label>
-    @Html.TextBoxFor(m => m.SessionCode, new { @hidden = "hidden", @id = "newCode" })
-    @Html.TextBoxFor(m => m.UserCode, new { @hidden = "hidden", @id = "userCode2" })
-    <br />
-    <input onclick="bothCodes('userCode2')" type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Session">
+    @using (Html.BeginForm("CreateSession", "SessionStart", FormMethod.Post))
+    {
+        
+    <div class="col-lg-6" style="margin-top:10px">
+        <div class="form-group text-center">
+            <div class="card text-center" >
+                <div class="card-body">
+                    <label class="card-title " asp-for="CreateSessionCode" style="font-size: calc(6em - 3.5vw);">Don't have a session code yet? Create your new session here</label>
+                    <p class="card-text">
+                        @Html.TextBoxFor(m => m.SessionCode, new { @hidden = "hidden", @id = "newCode" })
+                        @Html.TextBoxFor(m => m.UserCode, new { @hidden = "hidden", @id = "userCode2" })
+                        @Html.TextBoxFor(m => m.WhiteboardSessionCode, new { @class = "form-control", @hidden = "hidden", @id = "whiteboardSessionCode" })
+                    </p>
+                    <input onclick="bothCodes('userCode2', 'whiteboardSessionCode')" type="submit" id="submitButton" class="btn btn-info btn-block btn-lg text-white" style="width: 100%;font-size: calc(6em - 3.5vw);" value="Create Session">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-none" id="whiteboard"></div>
+    }
 </div>
-}

@@ -29,9 +29,9 @@
     </Content>
   </ItemGroup>
     <ItemGroup>
-      <Folder Include="Models\" />
       <Folder Include="Views\SessionStart\" />
       <Folder Include="Database\" />
       <Folder Include="Shared\" />
+      <Folder Include="Views\Whiteboard\" />
     </ItemGroup>
 </Project>

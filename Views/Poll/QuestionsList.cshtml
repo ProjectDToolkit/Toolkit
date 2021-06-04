@@ -1,0 +1,50 @@
+﻿@using ProjectD.Models
+@model IEnumerable<QuestionModel>
+<br />
+<a href="@Url.Action("Index", "SessionStart")" class="btn btn-dark btn-lg">Back to menu</a>
+<br />
+<br />
+@if (Model.Any())
+{
+    <div class="container bootstrap snippets bootdey">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="main-box no-header clearfix">
+                    <div class="main-box-body clearfix">
+                        <div class="table-responsive">
+                            <table class="table user-list">
+                                <thead>
+                                    <tr>
+                                        <th><span>Poll</span></th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var question in Model)
+                                {
+                                    <tbody>
+                                        <tr class="table-active">
+                                            <td>
+                                                @question.question
+                                            </td>
+                                            <td style="width: 15%;">
+                                                <form method="post" asp-action="QuestionsList" asp-controller="Poll">
+                                                    <button type="submit" name="id" value="@question.questionId" class="btn btn-primary">Vote on Poll</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <input type="button" class="btn btn-primary" title="Create a Poll" value="Create a Poll" onclick="location.href='@Url.Action("Index", "Poll", new { sessionId = "TEST1" })'"/>
+    <h2>No questions to view</h2>
+    <h3>Create a question Now!</h3>
+}
