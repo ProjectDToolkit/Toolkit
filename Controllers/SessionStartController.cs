@@ -151,6 +151,8 @@ namespace ProjectD.Controllers
                         // code to delete entire session
                         if (DeleteEntireSession(sessionCode))
 						{
+                            DeleteAllPollsInSession(sessionCode);
+
                             // code to delete user from session
                             if (DeleteUserFromSession(userCode, sessionCode))
                             {
@@ -290,6 +292,32 @@ namespace ProjectD.Controllers
             }
             catch (Exception ex)
             {
+                throw;
+            }
+            finally
+            {
+                Connection.Close();
+            }
+        }
+
+        private void DeleteAllPollsInSession(string sessionCode)
+        {
+            MySqlConnection Connection;
+            Connection = new MySqlConnection(Connector.getString());
+
+            try
+            {
+                Connection.Open();
+                string query = @"DELETE FROM database.polls WHERE sessionId = @SessionCode;";
+                MySqlCommand cmd = new MySqlCommand(query, Connection);
+                cmd.Parameters.AddWithValue("@SessionCode", sessionCode);
+
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
             finally

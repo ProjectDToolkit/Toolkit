@@ -135,9 +135,31 @@ namespace Project_D.Controllers
         /// <param name="id">question ID for getting the right question in the DB</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult QuestionsList(int id)
+        public IActionResult QuestionsList(int questionId)
         {
-            return RedirectToAction("Vote", "Poll", new { ID = id });
+            MySqlConnection Connection;
+            Connection = new MySqlConnection(Connector.getString());
+
+            try
+            {
+                Connection.Open();
+                string query = @"DELETE FROM database.polls WHERE id = @qid;";
+                MySqlCommand cmd = new MySqlCommand(query, Connection);
+                cmd.Parameters.AddWithValue("@qid", questionId);
+
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                Connection.Close();
+            }
+            return RedirectToAction("QuestionsList", "Poll");
         }
 
 
