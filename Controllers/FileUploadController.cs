@@ -18,23 +18,28 @@ namespace ProjectD.Controllers
 {
     public class FileUploadController : Controller
     {
-        private readonly IWebHostEnvironment environment;
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult Index(FileUpload obj)
+        public async Task<IActionResult> Index(FileUpload obj)
         {
             try
             {
                 string strDateTime = System.DateTime.Now.ToString("ddMMyyyyHHMMss");
-                string finalPath = "\\wwwroot\\Files\\" + strDateTime + obj.UploadFile.fileName;
-
-                obj.UploadFile.SaveAs(Directory.GetCurrentDirectory() + ("~") + finalPath);
+                string finalPath = "\\wwwroot\\Files\\" + strDateTime + obj.UploadFile.FileName;
                 obj.FilePath = finalPath;
                 ViewBag.Message = SaveToDB(obj);
+
+
+                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files", obj.UploadFile.FileName);
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await obj.UploadFile.CopyToAsync(stream);
+                }
+
                 return View();
             }
             catch (Exception ex)
@@ -43,18 +48,16 @@ namespace ProjectD.Controllers
                 return View();
             }
         }
-
         public string SaveToDB(FileUpload obj)
         {
             try
             {
-                HttpContext.Session.SetString("idSession", obj.IdSession);
-                HttpContext.Session.SetString("filename", obj.FileName);
+                HttpContext.Session.SetString("fileName", obj.FileName);
                 HttpContext.Session.SetString("fileDesc", obj.FileDesc);
                 HttpContext.Session.SetString("filePath", obj.FilePath);
                 if (HttpContext.Session.GetString("SessionCode") != null)
                 {
-                    string idSession = HttpContext.Session.GetString("idSession");
+                    string idSession = HttpContext.Session.GetString("SessionCode");
                     string fileName = HttpContext.Session.GetString("fileName");
                     string fileDesc = HttpContext.Session.GetString("fileDesc");
                     string filePath = HttpContext.Session.GetString("filePath");
@@ -62,16 +65,17 @@ namespace ProjectD.Controllers
                     MySqlConnection Connection;
                     Connection = new MySqlConnection(Connector.getString());
                     Connection.Open();
-                
-                        string stringToInsert = @"INSERT INTO file (idSession, filName, filePath,   onDate) VALUES (@idSession, @filName, @filePath, GETDATE())";
+
+                    string stringToInsert = @"INSERT INTO files (idSession, fileName, filePath) VALUES (@idSession, @fileName, @filePath)";
 
                     using (MySqlCommand command = new MySqlCommand(stringToInsert, Connection))
                     {
                         command.Parameters.AddWithValue("@idSession", idSession);
-                        command.Parameters.AddWithValue("@filName", fileName);
+                        command.Parameters.AddWithValue("@fileName", fileName);
                         command.Parameters.AddWithValue("@filePath", filePath);
 
                         command.Prepare();
+                        command.ExecuteNonQuery();
                     }
                     return "Saved Successfully";
                 }
@@ -87,30 +91,3 @@ namespace ProjectD.Controllers
         }
     }
 }
-
-
-
-        /*
-        [HttpPost("FileUpload")]
-        public async Task<IActionResult> Index(List<IFormFile> files)
-        {
-            long size = files.Sum(f => f.Length);
-
-            var filePaths = new List<string>();
-            foreach (var formFile in files)
-            {
-                if (formFile.Length > 0)
-                {
-                    string test = AppContext.BaseDirectory;
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot\\Files", formFile.FileName);
-                    filePaths.Add(filePath);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await formFile.CopyToAsync(stream);
-                    }
-                }
-            }
-            return View();
-        }
-        */
-

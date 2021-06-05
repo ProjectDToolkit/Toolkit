@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -20,6 +21,6 @@ namespace ProjectD.Models
         [DisplayName("File Path")]
         public string FilePath { get; set; }
 
-        public HttpPostedFileBase UploadFile { get; set; }
+        public IFormFile UploadFile { get; set; }
     }
 }

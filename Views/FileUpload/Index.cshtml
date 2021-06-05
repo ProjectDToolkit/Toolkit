@@ -1,4 +1,5 @@
-﻿@model ProjectD.Models.FileUpload
+﻿
+@model ProjectD.Models.FileUpload
 @{
     Layout = null;
 }
@@ -13,7 +14,7 @@
 </head>
 
 <body style="padding:5px;">
-    @using (Html.BeginForm("Index", "Products", FormMethod.Post, new
+    @using (Html.BeginForm("Index", "FileUpload", FormMethod.Post, new
     { enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
@@ -50,7 +51,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="submit" name="submit" value="Submit" />
+                        <input type="submit" name="submit" value="Upload" />
                     </td>
                 </tr>
                 <tr>
@@ -66,22 +67,3 @@
 </body>
 
 </html>
-
-
-
-
-
-@*@<form method="post" enctype="multipart/form-data" asp-controller="FileUpload" asp-action="Index">
-        <div class="form-group">
-            <div class="col-md-10">
-                <p>Upload one or more files using this form:</p>
-                <input type="file" name="files" multiple />
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-10">
-                <input type="submit" value="Upload" />
-            </div>
-        </div>
-    </form>
-*@
