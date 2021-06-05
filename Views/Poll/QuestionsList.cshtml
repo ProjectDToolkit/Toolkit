@@ -1,4 +1,5 @@
 ﻿@using ProjectD.Models
+@using Microsoft.AspNetCore.Http; 
 @model IEnumerable<QuestionModel>
 <br />
 @if (Model.Any())
@@ -8,6 +9,7 @@
             <div class="col-lg-12">
                 <div class="main-box no-header clearfix">
                     <div class="main-box-body clearfix">
+                        <input type="button" class="btn btn-primary" title="Create a Poll" value="Create a Poll" onclick="location.href='@Url.Action("Index", "Poll")'" />
                         <div class="table-responsive">
                             <table class="table user-list">
                                 <thead>
@@ -25,12 +27,15 @@
                                                 @question.question
                                             </td>
                                             <td style="width: 15%;">
+                                                @if (question.isAnswered)
+                                                {
+                                                    <input type="button" class="btn btn-primary" title="Result" value="Results" onclick="location.href='@Url.Action("Result", "Poll", new { id = $"{question.questionId}" })'" />
+                                                }
+                                            </td>
+                                            <td style="width: 15%;">
                                                 <form method="post" asp-action="QuestionsList" asp-controller="Poll">
                                                     <button type="submit" name="id" value="@question.questionId" class="btn btn-primary">Vote on Poll</button>
                                                 </form>
-                                            </td>
-                                            <td style="width: 15%;">
-                                                <input type="button" class="btn btn-primary" title="Result" value="Results" onclick="location.href='@Url.Action("Result", "Poll", new { id = $"{question.questionId}" })'" />
                                             </td>
                                         </tr>
                                     </tbody>
@@ -45,7 +50,7 @@
 }
 else
 {
-    <input type="button" class="btn btn-primary" title="Create a Poll" value="Create a Poll" onclick="location.href='@Url.Action("Index", "Poll", new { sessionId = "TEST1" })'"/>
+    <input type="button" class="btn btn-primary" title="Create a Poll" value="Create a Poll" onclick="location.href='@Url.Action("Index", "Poll")'"/>
     <h2>No questions to view</h2>
     <h3>Create a question Now!</h3>
 }

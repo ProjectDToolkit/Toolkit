@@ -11,5 +11,7 @@ namespace ProjectD.Models
         public int questionId { get; set; }
         public string SessionId { get; set; }
         public string question { get; set; }
+
+        public bool isAnswered { get; set; }
     }
 }

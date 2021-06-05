@@ -18,9 +18,8 @@ namespace Project_D.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="sessionId"></param>
         /// <returns></returns>
-        public IActionResult Index(string sessionId)
+        public IActionResult Index()
         {
             return View();
         }
@@ -99,11 +98,19 @@ namespace Project_D.Controllers
 
                 while (reader.Read())
                 {
+                    bool answered = false;
+
+                    if (reader.GetInt32("totalVotes") > 0)
+                    {
+                        answered = true;
+                    }
                     var question = new QuestionModel
                     {
                         questionId = reader.GetInt32("id"),
                         SessionId = reader.GetString("sessionId"),
-                        question = reader.GetString("question")
+                        question = reader.GetString("question"),
+                        isAnswered = answered
+
                     };
                     questionsList.Add(question);
                 }
