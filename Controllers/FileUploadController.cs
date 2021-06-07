@@ -30,7 +30,7 @@ namespace ProjectD.Controllers
             {
                 string sessionId = HttpContext.Session.GetString("SessionCode");
                 string strDateTime = System.DateTime.Now.ToString("ddMMyyyyHHMMss");
-                string finalPath = "\\wwwroot\\Files\\" +sessionId + "\\" + strDateTime + obj.UploadFile.FileName;
+                string finalPath = "\\wwwroot\\Files\\" +sessionId + "\\" + obj.UploadFile.FileName;
                 obj.FilePath = finalPath;
                 ViewBag.Message = SaveToDB(obj);
 
@@ -72,19 +72,36 @@ namespace ProjectD.Controllers
                     Connection = new MySqlConnection(Connector.getString());
                     Connection.Open();
 
-                    string stringToInsert = @"INSERT INTO files (idSession, fileName, fileDesc, filePath) VALUES (@idSession, @fileName, @fileDesc, @filePath)";
-
-                    using (MySqlCommand command = new MySqlCommand(stringToInsert, Connection))
+                    string stringToInsert = $"SELECT * from database.files WHERE idSession = '{idSession}' AND fileName = '{fileName}' AND fileDesc = '{fileDesc}';";
+                    MySqlCommand cmd = new MySqlCommand(stringToInsert, Connection);
+                    MySqlDataReader reader;
+                    reader = cmd.ExecuteReader();
+                    if (!reader.HasRows)
                     {
-                        command.Parameters.AddWithValue("@idSession", idSession);
-                        command.Parameters.AddWithValue("@fileName", fileName);
-                        command.Parameters.AddWithValue("@fileDesc", fileDesc);
-                        command.Parameters.AddWithValue("@filePath", filePath);
+                        MySqlConnection Connection2;
+                        Connection2 = new MySqlConnection(Connector.getString());
+                        Connection2.Open();
+                        stringToInsert = @"INSERT INTO files (idSession, fileName, fileDesc, filePath) VALUES (@idSession, @fileName, @fileDesc, @filePath)";
+                        using (MySqlCommand command = new MySqlCommand(stringToInsert, Connection2))
+                        {
+                            command.Parameters.AddWithValue("@idSession", idSession);
+                            command.Parameters.AddWithValue("@fileName", fileName);
+                            command.Parameters.AddWithValue("@fileDesc", fileDesc);
+                            command.Parameters.AddWithValue("@filePath", filePath);
 
-                        command.Prepare();
-                        command.ExecuteNonQuery();
+                            command.Prepare();
+                            command.ExecuteNonQuery();
+                            
+                        }
+                        Connection2.Close();
+                        Connection.Close();
+                        return "Saved Successfully";
                     }
-                    return "Saved Successfully";
+                    else
+                    {
+                        Connection.Close();
+                        return string.Format("There is already a file with this name and description!");
+                    }
                 }
                 else
                 {
@@ -96,5 +113,55 @@ namespace ProjectD.Controllers
                 return ex.Message.ToString();
             }
         }
+
+        public IActionResult FileList()
+        {
+            List<FileModel> fileList = new List<FileModel>();
+
+            MySqlConnection connection;
+            connection = new MySqlConnection(Connector.getString());
+
+            try
+            {
+                connection.Open();
+
+                string query = $"SELECT * FROM database.files WHERE idSession = '{HttpContext.Session.GetString("SessionCode")}';";
+
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                MySqlDataReader reader;
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var file = new FileModel
+                    {
+                        idFiles = reader.GetInt32("idFiles"),
+                        idSession = reader.GetString("idSession"),
+                        fileName = reader.GetString("fileName"),
+                        fileDesc = reader.GetString("fileDesc")
+                    };
+                    fileList.Add(file);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+
+            return View(fileList);
+        }
+
+        //[HttpPost]
+        //public FileResult FileList(int id)
+       // {
+
+            
+        //}
     }
 }
