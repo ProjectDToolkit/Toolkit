@@ -1,0 +1,50 @@
+﻿@using ProjectD.Models
+@model IEnumerable<FileModel>
+<br />
+<a href="@Url.Action("Index", "FileUpload")" class="btn btn-dark btn-lg">Upload File</a>
+<br />
+<br />
+@if (Model.Any())
+{
+    <div class="container bootstrap snippets bootdey">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="main-box no-header clearfix">
+                    <div class="main-box-body clearfix">
+                        <div class="table-responsive">
+                            <table class="table user-list">
+                                <thead>
+                                    <tr>
+                                        <th><span></span></th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var file in Model)
+                                {
+                                    <tbody>
+                                        <tr class="table-active">
+                                            <td>
+                                                @file.fileName
+                                            </td>
+                                            <td style="width: 15%;">
+                                                <form method="post" asp-action="FileList" asp-controller="FileUpload">
+                                                    <button type="submit" name="id" value="@file.idFiles" class="btn btn-primary">Download?</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <input type="button" class="btn btn-primary" title="Upload a file" value="Create a Poll" onclick="location.href='@Url.Action("Index", "FileUpload")'" />
+    <h2>No files to view</h2>
+    <h3>Upload a file Now!</h3>
+}
