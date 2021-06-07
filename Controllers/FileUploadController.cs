@@ -28,14 +28,20 @@ namespace ProjectD.Controllers
         {
             try
             {
+                string sessionId = HttpContext.Session.GetString("SessionCode");
                 string strDateTime = System.DateTime.Now.ToString("ddMMyyyyHHMMss");
-                string finalPath = "\\wwwroot\\Files\\" + strDateTime + obj.UploadFile.FileName;
+                string finalPath = "\\wwwroot\\Files\\" +sessionId + "\\" + strDateTime + obj.UploadFile.FileName;
                 obj.FilePath = finalPath;
                 ViewBag.Message = SaveToDB(obj);
 
+                var folderpath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files\\" + sessionId + "\\");
+                if (!Directory.Exists(folderpath))
+                {
+                    Directory.CreateDirectory(folderpath);
+                }
 
-                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files", obj.UploadFile.FileName);
-                using (var stream = System.IO.File.Create(filePath))
+                var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files\\" + sessionId + "\\", obj.UploadFile.FileName);
+                using (var stream = System.IO.File.Create(filepath))
                 {
                     await obj.UploadFile.CopyToAsync(stream);
                 }
@@ -66,12 +72,13 @@ namespace ProjectD.Controllers
                     Connection = new MySqlConnection(Connector.getString());
                     Connection.Open();
 
-                    string stringToInsert = @"INSERT INTO files (idSession, fileName, filePath) VALUES (@idSession, @fileName, @filePath)";
+                    string stringToInsert = @"INSERT INTO files (idSession, fileName, fileDesc, filePath) VALUES (@idSession, @fileName, @fileDesc, @filePath)";
 
                     using (MySqlCommand command = new MySqlCommand(stringToInsert, Connection))
                     {
                         command.Parameters.AddWithValue("@idSession", idSession);
                         command.Parameters.AddWithValue("@fileName", fileName);
+                        command.Parameters.AddWithValue("@fileDesc", fileDesc);
                         command.Parameters.AddWithValue("@filePath", filePath);
 
                         command.Prepare();
