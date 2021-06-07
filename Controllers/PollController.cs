@@ -34,6 +34,26 @@ namespace Project_D.Controllers
         [HttpPost]
         public IActionResult Index(string question, string answerA, string answerB)
         {
+            if (AddPoll(HttpContext.Session.GetString("SessionCode"), question, answerA, answerB))
+            {
+                return RedirectToAction("QuestionsList", "Poll", new { sessionId = HttpContext.Session.GetString("SessionCode") });
+            }
+            else
+		    {
+                ViewBag.ErrorMessage = "Vul een alle velden in aub!";
+                return View();
+            }
+        }
+
+        /// <summary>
+        /// function for creating a poll, puts the question with the answers in the database
+        /// </summary>
+        /// <param name="question">The poll question</param>
+        /// <param name="answerA">The first answer</param>
+        /// <param name="answerB">The second answer</param>
+        /// <returns> returns bool true or false</returns>
+        public static bool AddPoll(string sessioncode, string question, string answerA, string answerB)
+        { 
             if (question != null && answerA != null && answerB != null)
             {
                 MySqlConnection connection;
@@ -52,11 +72,13 @@ namespace Project_D.Controllers
                     }
                     reader.Close();
 
-                    query = $"INSERT INTO `database`.`polls` (`id`, `sessionId`,`question`, `answerA`, `answerB`) VALUES ('{QID}','{HttpContext.Session.GetString("SessionCode")}','{question}','{answerA}','{answerB}');";
+                    query = $"INSERT INTO `database`.`polls` (`id`, `sessionId`,`question`, `answerA`, `answerB`) VALUES ('{QID}','{sessioncode}','{question}','{answerA}','{answerB}');";
 
                     command = new MySqlCommand(query, connection);
                     reader = command.ExecuteReader();
                     reader.Close();
+
+                    return true;
                 }
                 catch (Exception)
                 {
@@ -67,12 +89,11 @@ namespace Project_D.Controllers
                     connection.Close();
                 }
 
-                return RedirectToAction("QuestionsList", "Poll", new { sessionId = HttpContext.Session.GetString("SessionCode") });
             }
             else
             {
-                ViewBag.ErrorMessage = "Vul een alle velden in aub!";
-                return View();
+                
+                return false;
             }
         }
         /// <summary>
@@ -137,6 +158,20 @@ namespace Project_D.Controllers
         [HttpPost]
         public IActionResult QuestionsList(int questionId)
         {
+            if (DeleteQuestion(questionId))
+			{
+                return RedirectToAction("QuestionsList", "Poll");
+            }
+            else
+			{
+                // change this to error message
+                return RedirectToAction("QuestionsList", "Poll");
+            }
+
+        }
+
+        public static bool DeleteQuestion(int questionId)
+		{
             MySqlConnection Connection;
             Connection = new MySqlConnection(Connector.getString());
 
@@ -159,7 +194,8 @@ namespace Project_D.Controllers
             {
                 Connection.Close();
             }
-            return RedirectToAction("QuestionsList", "Poll");
+
+            return true;
         }
 
 
@@ -220,6 +256,20 @@ namespace Project_D.Controllers
         [HttpPost]
         public IActionResult Vote(string Vote)
         {
+            if (VoteOnQuestion(Vote))
+			{
+                return RedirectToAction("QuestionsList", "Poll", new { sessionId = HttpContext.Session.GetString("SessionCode") });
+            }
+            else
+			{
+                // change this to error message
+                return RedirectToAction("QuestionsList", "Poll", new { sessionId = HttpContext.Session.GetString("SessionCode") });
+            }
+            
+        }
+
+        public static bool VoteOnQuestion(string Vote)
+		{
             MySqlConnection connection;
             connection = new MySqlConnection(Connector.getString());
             try
@@ -234,15 +284,13 @@ namespace Project_D.Controllers
             }
             catch (Exception)
             {
-
-
                 throw;
             }
             finally
             {
                 connection.Close();
             }
-            return RedirectToAction("QuestionsList", "Poll", new { sessionId = HttpContext.Session.GetString("SessionCode") });
+            return true;
         }
         
         public IActionResult Result(int id)
