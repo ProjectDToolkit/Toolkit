@@ -138,7 +138,8 @@ namespace ProjectD.Controllers
                         idFiles = reader.GetInt32("idFiles"),
                         idSession = reader.GetString("idSession"),
                         fileName = reader.GetString("fileName"),
-                        fileDesc = reader.GetString("fileDesc")
+                        fileDesc = reader.GetString("fileDesc"),
+                        filePath = reader.GetString("filePath")
                     };
                     fileList.Add(file);
                 }
@@ -152,16 +153,19 @@ namespace ProjectD.Controllers
             {
                 connection.Close();
             }
-
-
             return View(fileList);
         }
 
-        //[HttpPost]
-        //public FileResult FileList(int id)
-       // {
-
-            
-        //}
+        public FileResult Download(string filePath)
+        {
+            string sessionId = HttpContext.Session.GetString("SessionCode");
+            sessionId.ToUpper();
+            var splitFilePath = filePath.Split(new string[] { sessionId }, StringSplitOptions.None);
+            string fileName = splitFilePath[1];
+            string directory = Directory.GetCurrentDirectory();
+            string fullPath = directory + filePath;
+            byte[] fileBytes = System.IO.File.ReadAllBytes(fullPath);
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
     }
 }

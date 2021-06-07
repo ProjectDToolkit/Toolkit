@@ -12,5 +12,7 @@ namespace ProjectD.Models
         public string idSession{ get; set; }
         public string fileName { get; set; }
         public string fileDesc { get; set; }
+
+        public string filePath { get; set; }
     }
 }

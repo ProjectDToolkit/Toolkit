@@ -15,7 +15,7 @@
                             <table class="table user-list">
                                 <thead>
                                     <tr>
-                                        <th><span></span></th>
+                                        <th><span>Files</span></th>
                                         <th>&nbsp;</th>
                                     </tr>
                                 </thead>
@@ -27,9 +27,10 @@
                                                 @file.fileName
                                             </td>
                                             <td style="width: 15%;">
-                                                <form method="post" asp-action="FileList" asp-controller="FileUpload">
-                                                    <button type="submit" name="id" value="@file.idFiles" class="btn btn-primary">Download?</button>
-                                                </form>
+                                                @*@<form method="post" asp-action="@Html.ActionLink("Download", "Download", new { file.fileName })" asp-controller="FileUpload">
+                                                <button type="submit" name="idFiles" value="@file.idFiles" class="btn btn-primary">Download</button>
+                                                </form>*@
+                                                @Html.ActionLink("Download", "Download", new { filePath = file.filePath })
                                             </td>
                                         </tr>
                                     </tbody>
@@ -44,7 +45,7 @@
 }
 else
 {
-    <input type="button" class="btn btn-primary" title="Upload a file" value="Create a Poll" onclick="location.href='@Url.Action("Index", "FileUpload")'" />
     <h2>No files to view</h2>
     <h3>Upload a file Now!</h3>
+    <input type="button" class="btn btn-primary" title="Upload a file" value="Upload a file" onclick="location.href='@Url.Action("Index", "FileUpload")'" />
 }
