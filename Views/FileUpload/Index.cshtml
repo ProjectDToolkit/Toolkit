@@ -1,0 +1,63 @@
+﻿
+@model ProjectD.Models.FileUpload
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <title>File Upload</title>
+</head>
+
+<body style="padding:5px;">
+    @using (Html.BeginForm("Index", "FileUpload", FormMethod.Post, new
+    { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <h1>
+          File Upload Example
+        </h1>
+        <hr />
+        <div>
+            <table class="table-condensed">
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.FileName) &nbsp;&nbsp;
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.FileName)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.FileDesc)
+
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.FileDesc)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.FilePath)
+                    </td>
+                    <td>
+                        <input type="file" name="UploadFile" required />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="submit" name="submit" value="Upload" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        @ViewBag.Message
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+    <div>
+    </div>
+</body>
+
+</html>

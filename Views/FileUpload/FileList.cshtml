@@ -1,0 +1,55 @@
+﻿@using ProjectD.Models
+@using Microsoft.AspNetCore.Http;
+@model IEnumerable<FileModel>
+@if (Model.Any())
+{
+    <div class="container bootstrap snippets bootdey">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="main-box no-header clearfix">
+                    <div class="main-box-body clearfix">
+                        <input type="button" class="btn btn-primary" title="Upload File" value="Upload File" onclick="location.href='@Url.Action("Index", "FileUpload")'" />
+                        <div class="table-responsive">
+                            <table class="table user-list">
+                                <thead>
+                                    <tr>
+                                        <th><span>File Name</span></th>
+                                        <th><span>File Description</span></th>
+                                        <th>&nbsp;</th>
+                                        <th>&nbsp;</th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var file in Model)
+                                {
+                                    <tbody>
+                                        <tr class="table-active">
+                                            <td>
+                                                @file.fileName
+                                            </td>
+                                            <td>
+                                                @file.fileDesc
+                                            </td>
+                                            <td style="width: 15%;">
+                                                   @Html.ActionLink("Download", "Download", new { filePath = file.filePath })
+                                            </td>
+                                            <td style="width: 15%">
+                                                @Html.ActionLink("Delete", "DeleteFile", new { idFile = file.idFiles })
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <h2>No files to view</h2>
+    <h3>Upload a file Now!</h3>
+    <input type="button" class="btn btn-primary" title="Upload a file" value="Upload a file" onclick="location.href='@Url.Action("Index", "FileUpload")'" />
+}
