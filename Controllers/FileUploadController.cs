@@ -72,8 +72,6 @@ namespace ProjectD.Controllers
                     var splitFilePath = filePath.Split(new string[] { idSession }, StringSplitOptions.None);
                     idSession = idSession.ToUpper();
                     filePath = splitFilePath[0] + idSession + splitFilePath[1];
-
-                    string test = "test";
                         
                     MySqlConnection Connection;
                     Connection = new MySqlConnection(Connector.getString());
@@ -166,7 +164,7 @@ namespace ProjectD.Controllers
         public FileResult Download(string filePath)
         {
             string sessionId = HttpContext.Session.GetString("SessionCode");
-            sessionId.ToUpper();
+            sessionId = sessionId.ToUpper();
             var splitFilePath = filePath.Split(new string[] { sessionId }, StringSplitOptions.None);
             string fileName = splitFilePath[1];
             string directory = Directory.GetCurrentDirectory();
