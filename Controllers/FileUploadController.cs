@@ -167,5 +167,30 @@ namespace ProjectD.Controllers
             byte[] fileBytes = System.IO.File.ReadAllBytes(fullPath);
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
+
+        public IActionResult DeleteFile (int idFile)
+        {
+            MySqlConnection Connection;
+            Connection = new MySqlConnection(Connector.getString());
+
+            try
+            {
+                Connection.Open();
+                string query = @"DELETE FROM database.files WHERE idfiles = @qid;";
+                MySqlCommand cmd = new MySqlCommand(query, Connection);
+                cmd.Parameters.AddWithValue("@qid", idFile);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                Connection.Close();
+            }
+            return RedirectToAction("FileList", "FileUpload");
+        }
     }
+        
 }

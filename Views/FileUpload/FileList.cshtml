@@ -1,9 +1,6 @@
 ﻿@using ProjectD.Models
+@using Microsoft.AspNetCore.Http;
 @model IEnumerable<FileModel>
-<br />
-<a href="@Url.Action("Index", "FileUpload")" class="btn btn-dark btn-lg">Upload File</a>
-<br />
-<br />
 @if (Model.Any())
 {
     <div class="container bootstrap snippets bootdey">
@@ -11,11 +8,15 @@
             <div class="col-lg-12">
                 <div class="main-box no-header clearfix">
                     <div class="main-box-body clearfix">
+                        <input type="button" class="btn btn-primary" title="Upload File" value="Upload File" onclick="location.href='@Url.Action("Index", "FileUpload")'" />
                         <div class="table-responsive">
                             <table class="table user-list">
                                 <thead>
                                     <tr>
-                                        <th><span>Files</span></th>
+                                        <th><span>File Name</span></th>
+                                        <th><span>File Description</span></th>
+                                        <th>&nbsp;</th>
+                                        <th>&nbsp;</th>
                                         <th>&nbsp;</th>
                                     </tr>
                                 </thead>
@@ -26,11 +27,14 @@
                                             <td>
                                                 @file.fileName
                                             </td>
+                                            <td>
+                                                @file.fileDesc
+                                            </td>
                                             <td style="width: 15%;">
-                                                @*@<form method="post" asp-action="@Html.ActionLink("Download", "Download", new { file.fileName })" asp-controller="FileUpload">
-                                                <button type="submit" name="idFiles" value="@file.idFiles" class="btn btn-primary">Download</button>
-                                                </form>*@
-                                                @Html.ActionLink("Download", "Download", new { filePath = file.filePath })
+                                                   @Html.ActionLink("Download", "Download", new { filePath = file.filePath })
+                                            </td>
+                                            <td style="width: 15%">
+                                                @Html.ActionLink("Delete", "DeleteFile", new { idFile = file.idFiles })
                                             </td>
                                         </tr>
                                     </tbody>
