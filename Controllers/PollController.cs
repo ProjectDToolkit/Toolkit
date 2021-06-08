@@ -172,10 +172,6 @@ namespace Project_D.Controllers
         /// <returns></returns>
         public IActionResult Vote(int id)
         {
-            string question = "";
-            string answerA = "";
-            string answerB = "";
-
             QID = id;
 
             MySqlConnection connection;
