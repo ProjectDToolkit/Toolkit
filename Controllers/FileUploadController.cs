@@ -68,6 +68,13 @@ namespace ProjectD.Controllers
                     string fileDesc = HttpContext.Session.GetString("fileDesc");
                     string filePath = HttpContext.Session.GetString("filePath");
 
+                    
+                    var splitFilePath = filePath.Split(new string[] { idSession }, StringSplitOptions.None);
+                    idSession = idSession.ToUpper();
+                    filePath = splitFilePath[0] + idSession + splitFilePath[1];
+
+                    string test = "test";
+                        
                     MySqlConnection Connection;
                     Connection = new MySqlConnection(Connector.getString());
                     Connection.Open();
