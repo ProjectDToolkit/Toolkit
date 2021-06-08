@@ -86,11 +86,13 @@ namespace Project_D.Controllers
             MySqlConnection connection;
             connection = new MySqlConnection(Connector.getString());
 
+            string sessioncode = HttpContext.Session.GetString("SessionCode");
+
             try
             {
                 connection.Open();
 
-                string query = $"SELECT * FROM database.polls WHERE sessionID = '{HttpContext.Session.GetString("SessionCode")}';";
+                string query = $"SELECT * FROM database.polls WHERE sessionID = '{sessioncode}';";
 
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 MySqlDataReader reader;
@@ -188,9 +190,9 @@ namespace Project_D.Controllers
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    question = reader.GetString("question");
-                    answerA = reader.GetString("answerA");
-                    answerB = reader.GetString("answerB");
+                    ViewBag.Question = reader.GetString("question");
+                    ViewBag.AnswerA = reader.GetString("answerA");
+                    ViewBag.AnswerB = reader.GetString("answerB");
                 }
                 reader.Close();
             }
@@ -204,10 +206,6 @@ namespace Project_D.Controllers
             {
                 connection.Close();
             }
-
-            ViewBag.Question = question;
-            ViewBag.AnswerA = answerA;
-            ViewBag.AnswerB = answerB;
 
             return View(id);
         }
