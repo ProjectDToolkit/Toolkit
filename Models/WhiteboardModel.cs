@@ -4,6 +4,8 @@ namespace ProjectD.Models
 {
 	public class WhiteboardModel
 	{
-		public string WhiteboardSessionCode { get; set; }
+		public int questionId { get; set; }
+		public string SessionId { get; set; }
+		public string question { get; set; }
 	}
 }

@@ -1,0 +1,108 @@
+﻿@using ProjectD.Models
+@model IEnumerable<QuestionModel>
+@using Microsoft.AspNetCore.Http
+@using Project_D.Shared;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html>
+<body onload="myFunction()">
+    <script src="https://zwibbler.com/zwibbler-demo.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <div id="whiteboard"></div>
+</body>
+</html>
+
+<style>
+    #whiteboard {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 50vh;
+        top: calc(200px - 5vw);
+    }
+
+    #toggle {
+        position: absolute;
+        left: 5px;
+        bottom: 5px;
+    }
+
+    #poll {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 51vh;
+    }
+
+    body {
+        overflow: hidden;
+    }
+
+    #chartContainer {
+        position: absolute;
+        left: 5px;
+        right: 0;
+        bottom: 0;
+        top: calc(100px - 5vw);
+    }
+</style>
+
+<script src="https://zwibbler.com/zwibbler-demo.js"></script>
+<script>var ctx = Zwibbler.create("#whiteboard", {
+
+    });
+
+    function myFunction() {
+        var name = "@HttpContextAccessor.HttpContext.Session.GetString("WhiteboardSessionCode")"
+        if (name) {
+            ctx.joinSharedSession(name);
+        }
+    }
+
+
+</script>
+<script>function toggleVotes() {
+        var whiteboard = document.getElementById("whiteboard");
+
+
+        if (whiteboard.style.bottom != "50vh") {
+            whiteboard.style.bottom = "50vh";
+            document.getElementById("poll").style.display = "block";
+        }
+        else {
+            whiteboard.style.bottom = "60px";
+            document.getElementById("poll").style.display = "none";
+        }
+
+    }</script>
+
+<script>
+window.onload = function () {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	exportEnabled: true,
+	animationEnabled: true,
+	title: {
+		text: "Results",
+		fontSize: 21
+	},
+	data: [{
+		type: "pie",
+		startAngle: 160,
+		toolTipContent: "<b>{label}</b>: {y}",
+		indexLabel: "{label} - {y}",
+		dataPoints: @Html.Raw(ViewBag.DataPoints)
+	}]
+});
+chart.render();
+
+}
+</script>
+<a class="btn btn-info btn-lg text-white" id="toggle" onclick="toggleVotes()">Toggle Vote System</a>
+<div id="poll">
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+</div>

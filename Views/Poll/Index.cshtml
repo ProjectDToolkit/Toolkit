@@ -8,15 +8,15 @@
         <br />
         <p style="color:red;">@ViewBag.ErrorMessage</p>
         <label asp-for="Question"></label>
-        <input asp-for="Question" name="Question" class="form-control" />
+        <input asp-for="Question" name="Question" class="form-control" required/>
         <br />
         <br />
         <br />
         <label asp-for="AnswerA">Answer A</label>
-        <input asp-for="AnswerA" name="AnswerA" class="form-control" />
+        <input asp-for="AnswerA" name="AnswerA" class="form-control" required/>
         <br />
         <label asp-for="AnswerB">Answer B</label>
-        <input asp-for="AnswerB" name="AnswerB" class="form-control" />
+        <input asp-for="AnswerB" name="AnswerB" class="form-control" required/>
         <br />
         <input type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Poll">
     </div>

@@ -1,0 +1,92 @@
+﻿@model ProjectD.Models.PollModel
+@using Microsoft.AspNetCore.Http
+@using Project_D.Shared;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html>
+<body onload="myFunction()">
+    <script src="https://zwibbler.com/zwibbler-demo.js"></script>
+    <div id="whiteboard"></div>
+
+</body>
+</html>
+
+<style>
+    #whiteboard {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 50vh;
+        top: calc(200px - 5vw);
+    }
+
+    #toggle {
+        position: absolute;
+        left: 5px;
+        bottom: 5px;
+    }
+
+    #poll {
+        position: absolute;
+        left: 5px;
+        right: 0;
+        top: 51vh;
+    }
+
+    body {
+        overflow: hidden;
+    }
+</style>
+
+<script src="https://zwibbler.com/zwibbler-demo.js"></script>
+<script>var ctx = Zwibbler.create("#whiteboard", {
+
+    });
+
+    function myFunction() {
+        var name = "@HttpContextAccessor.HttpContext.Session.GetString("WhiteboardSessionCode")"
+        if (name) {
+            ctx.joinSharedSession(name);
+        }
+    }
+
+
+</script>
+<script>function toggleVotes() {
+        var whiteboard = document.getElementById("whiteboard");
+
+
+        if (whiteboard.style.bottom != "50vh") {
+            whiteboard.style.bottom = "50vh";
+            document.getElementById("poll").style.display = "block";
+        }
+        else {
+            whiteboard.style.bottom = "60px";
+            document.getElementById("poll").style.display = "none";
+        }
+
+    }</script>
+
+<a class="btn btn-info btn-lg text-white" id="toggle" onclick="toggleVotes()">Toggle Vote System</a>
+<div id="poll">
+    <form method="post" asp-action="IndexWithNewPoll" asp-controller="Whiteboard" class="form-group">
+        <div class="form-group">
+
+            <h1>Enter a question that you want to poll</h1>
+            <br />
+            <p style="color:red;">@ViewBag.ErrorMessage</p>
+            <label asp-for="Question"></label>
+            <input asp-for="Question" name="Question" class="form-control" required />
+            <br />
+            <label asp-for="AnswerA">Answer A</label>
+            <input asp-for="AnswerA" name="AnswerA" class="form-control" required />
+            <br />
+            <label asp-for="AnswerB">Answer B</label>
+            <input asp-for="AnswerB" name="AnswerB" class="form-control" required />
+            <br />
+            <input type="submit" id="submitButton" class="btn btn-dark btn-lg" value="Create Poll">
+        </div>
+    </form>
+</div>
