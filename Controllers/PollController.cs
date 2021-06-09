@@ -132,7 +132,7 @@ namespace Project_D.Controllers
         }
 
         /// <summary>
-        /// Redirects to the right voting page for the poll the user has selected
+        /// Removes the selected poll from the database
         /// </summary>
         /// <param name="id">question ID for getting the right question in the DB</param>
         /// <returns></returns>
@@ -262,14 +262,11 @@ namespace Project_D.Controllers
                     string answerA = reader.GetString("answerA");
                     int votesA = reader.GetInt32("votesA");
                     
-                    float percA = votesA / totalvotes;
 
                     dataPoints.Add(new DataPoint(answerA, votesA));
 
                     string answerB = reader.GetString("answerB");
                     int votesB = reader.GetInt32("votesB");
-                    int percB = (votesA / totalvotes) * 100;
-
                     
                     dataPoints.Add(new DataPoint(answerB, votesB));
 
