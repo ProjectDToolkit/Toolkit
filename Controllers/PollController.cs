@@ -212,8 +212,13 @@ namespace Project_D.Controllers
         /// <param name="Vote">Gets the option that the user has voted on</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Vote(string Vote)
+        public IActionResult Vote(string Vote, int id = 0)
         {
+            if (QID == 0)
+            {
+                QID = id;
+            }
+
             MySqlConnection connection;
             connection = new MySqlConnection(Connector.getString());
             try
