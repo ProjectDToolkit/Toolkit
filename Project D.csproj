@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Project_D' " />
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\NewFolder1\**" />
+    <Compile Remove="wwwroot\NewFolder\**" />
+    <Content Remove="wwwroot\NewFolder1\**" />
+    <Content Remove="wwwroot\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\NewFolder1\**" />
+    <EmbeddedResource Remove="wwwroot\NewFolder\**" />
+    <None Remove="wwwroot\NewFolder1\**" />
+    <None Remove="wwwroot\NewFolder\**" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\Content\msteams-16.css" />
     <None Include="wwwroot\Content\Site.css" />
@@ -33,5 +44,6 @@
       <Folder Include="Database\" />
       <Folder Include="Shared\" />
       <Folder Include="Views\Whiteboard\" />
+      <Folder Include="wwwroot\Files\" />
     </ItemGroup>
 </Project>
