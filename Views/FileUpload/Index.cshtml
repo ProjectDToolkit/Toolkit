@@ -1,11 +1,11 @@
 ﻿
 @model ProjectD.Models.FileUpload
-
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <link href="~/Content/bootstrap.css" rel="stylesheet" />
-    <title>File Upload</title>
-</head>
+@*<head>
+        <meta name="viewport" content="width=device-width" />
+        <link href="~/Content/bootstrap.css" rel="stylesheet" />
+        <title>File Upload</title>
+    </head>
+*@
 
 <body style="padding:5px;">
     @using (Html.BeginForm("Index", "FileUpload", FormMethod.Post, new
@@ -13,7 +13,7 @@
     {
         @Html.AntiForgeryToken()
         <h1>
-          File Upload Example
+            File Upload 
         </h1>
         <hr />
         <div>
@@ -60,4 +60,4 @@
     </div>
 </body>
 
-</html>
+
