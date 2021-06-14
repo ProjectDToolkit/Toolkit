@@ -29,7 +29,7 @@ namespace ProjectD.Controllers
         [HttpPost]
         public IActionResult CreateSession(HomeModel hm)
 		{
-            HttpContext.Session.SetString("SessionCode", hm.SessionCode);
+            HttpContext.Session.SetString("SessionCode", hm.SessionCode.ToString());
             HttpContext.Session.SetString("UserCode", hm.UserCode);
             HttpContext.Session.SetString("WhiteboardSessionCode", hm.WhiteboardSessionCode);
 

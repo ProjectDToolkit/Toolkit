@@ -107,11 +107,13 @@ namespace Project_D.Controllers
             MySqlConnection connection;
             connection = new MySqlConnection(Connector.getString());
 
+            string sessioncode = HttpContext.Session.GetString("SessionCode");
+
             try
             {
                 connection.Open();
 
-                string query = $"SELECT * FROM database.polls WHERE sessionID = '{HttpContext.Session.GetString("SessionCode")}';";
+                string query = $"SELECT * FROM database.polls WHERE sessionID = '{sessioncode}';";
 
                 MySqlCommand cmd = new MySqlCommand(query, connection);
                 MySqlDataReader reader;
@@ -151,7 +153,7 @@ namespace Project_D.Controllers
         }
 
         /// <summary>
-        /// Redirects to the right voting page for the poll the user has selected
+        /// Removes the selected poll from the database
         /// </summary>
         /// <param name="id">question ID for getting the right question in the DB</param>
         /// <returns></returns>
@@ -206,10 +208,6 @@ namespace Project_D.Controllers
         /// <returns></returns>
         public IActionResult Vote(int id)
         {
-            string question = "";
-            string answerA = "";
-            string answerB = "";
-
             QID = id;
 
             MySqlConnection connection;
@@ -224,9 +222,9 @@ namespace Project_D.Controllers
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    question = reader.GetString("question");
-                    answerA = reader.GetString("answerA");
-                    answerB = reader.GetString("answerB");
+                    ViewBag.Question = reader.GetString("question");
+                    ViewBag.AnswerA = reader.GetString("answerA");
+                    ViewBag.AnswerB = reader.GetString("answerB");
                 }
                 reader.Close();
             }
@@ -241,10 +239,6 @@ namespace Project_D.Controllers
                 connection.Close();
             }
 
-            ViewBag.Question = question;
-            ViewBag.AnswerA = answerA;
-            ViewBag.AnswerB = answerB;
-
             return View(id);
         }
 
@@ -254,9 +248,14 @@ namespace Project_D.Controllers
         /// <param name="Vote">Gets the option that the user has voted on</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Vote(string Vote)
+        public IActionResult Vote(string Vote, int id = 0)
         {
-            if (VoteOnQuestion(Vote))
+                if (QID == 0)
+             {
+                    QID = id;
+             }
+
+                if (VoteOnQuestion(Vote))
 			{
                 return RedirectToAction("QuestionsList", "Poll", new { sessionId = HttpContext.Session.GetString("SessionCode") });
             }
@@ -316,14 +315,11 @@ namespace Project_D.Controllers
                     string answerA = reader.GetString("answerA");
                     int votesA = reader.GetInt32("votesA");
                     
-                    float percA = votesA / totalvotes;
 
                     dataPoints.Add(new DataPoint(answerA, votesA));
 
                     string answerB = reader.GetString("answerB");
                     int votesB = reader.GetInt32("votesB");
-                    int percB = (votesA / totalvotes) * 100;
-
                     
                     dataPoints.Add(new DataPoint(answerB, votesB));
 
